@@ -15,4 +15,7 @@ out.write_text(page, encoding='utf-8')
 docs_page = ROOT / 'docs/index.html'
 docs_page.parent.mkdir(parents=True, exist_ok=True)
 docs_page.write_text(page, encoding='utf-8')
-print('Built site/index.html and docs/index.html')
+(ROOT / 'index.html').write_text(page, encoding='utf-8')
+for directory in [ROOT, ROOT / 'site', ROOT / 'docs']:
+    (directory / '.nojekyll').write_text('', encoding='utf-8')
+print('Built index.html, site/index.html and docs/index.html')
