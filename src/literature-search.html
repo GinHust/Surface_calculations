@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Literature Search | Surface Compute Lab</title>
+<style>
+:root{color-scheme:light;--ink:#163746;--muted:#607782;--bg:#f3f6f8;--edge:#d8e4e9;--accent:#087c83;--soft:#e8f5f3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,"Segoe UI",sans-serif}
+a{color:#06767e;text-decoration:none}a:hover{text-decoration:underline}
+header{background:#183542;color:#f1f8fa;padding:16px max(20px,calc((100vw - 1100px)/2))}
+header a{color:#d0f2ee}main{max-width:1100px;margin:auto;padding:27px 20px 55px}
+h1{margin:8px 0 4px;font-size:29px;letter-spacing:-.5px}h2{font-size:19px;margin:0 0 12px}
+p{margin:5px 0 12px}.muted,.meta{color:var(--muted)}.meta{font-size:13px}
+.panel,.paper{border:1px solid var(--edge);background:#fff;border-radius:10px;padding:19px;margin:15px 0}
+.controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin:10px 0}
+input,select,button{font:inherit;border:1px solid #c8d7dd;border-radius:7px;padding:10px 12px;background:#fff;color:var(--ink)}
+input{min-width:0;width:100%}button{cursor:pointer}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button:disabled{opacity:.55;cursor:wait}
+label{font-size:13px;font-weight:600;display:block}.filters{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.filters label{flex:1;min-width:145px}.filters select,.filters input{margin-top:4px}
+.quick,.actions,.toprow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.quick button{padding:6px 9px;font-size:12px}.actions{margin-top:11px}.actions a,.actions button{font-size:13px;padding:6px 10px;border-radius:6px;border:1px solid var(--edge);background:#fff}
+.title{font-size:17px;font-weight:650;color:#123848}.paper{margin:10px 0;padding:17px 19px}.abstract{font-size:14px;color:#425c65;margin-top:9px;white-space:normal}
+.badge{display:inline-block;background:var(--soft);color:#08767c;border-radius:5px;padding:2px 7px;font-size:11px;margin-right:7px}
+#status{min-height:25px}#papers{margin-top:10px}.switch{margin-left:auto;display:flex;gap:5px}
+.switch button{padding:5px 8px;background:transparent;color:white;border-color:#56727c;font-size:12px}
+.switch button.active{background:#d6f0ef;color:#163746}
+.tabs{display:flex;gap:10px;align-items:center;margin-top:15px}.tabs button.active{background:#183542;color:#fff}
+footer{margin-top:25px;font-size:12px;color:var(--muted)}
+@media(max-width:620px){.controls{grid-template-columns:1fr}.filters label{min-width:44%}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="toprow"><a href="./index.html">← Surface Compute Lab</a><div class="switch"><button data-lang="en">EN</button><button data-lang="ko">한국어</button><button data-lang="vi">Tiếng Việt</button></div></div></header>
+<main>
+<h1 data-i18n="heading">Live Literature Search</h1>
+<p class="muted" data-i18n="intro">Search research papers via OpenAlex and cross-check on Google Scholar. No Google Scholar scraping.</p>
+<section class="panel">
+<form id="searchForm">
+<label for="query" data-i18n="keyword">Research keywords</label>
+<div class="controls"><input id="query" value="nitrogen-assisted diamond growth" required maxlength="300" aria-label="Research keywords"><button class="primary" type="submit" id="searchBtn" data-i18n="search">Search papers</button></div>
+<div class="filters">
+<label><span data-i18n="sort">Sort by</span><select id="sort"><option value="relevance_score:desc" data-i18n="relevance">Relevance</option><option value="publication_date:desc" data-i18n="newest">Newest</option><option value="cited_by_count:desc" data-i18n="cited">Most cited</option></select></label>
+<label><span data-i18n="year">From year (optional)</span><input id="year" type="number" min="1900" max="2100" placeholder="e.g. 2018"></label>
+<label><span data-i18n="access">Access</span><select id="oa"><option value="all" data-i18n="all">All papers</option><option value="true" data-i18n="openaccess">Open access only</option></select></label>
+</div>
+</form>
+<div class="quick" style="margin-top:14px"><span class="meta" data-i18n="examples">Examples:</span><button type="button" data-topic="nitrogen overgrowth diamond chemical vapor deposition">Nitrogen overgrowth</button><button type="button" data-topic="diamond 100 surface DFT nitrogen">Diamond (100) DFT</button><button type="button" data-topic="diamond CVD methyl adsorption reaction barriers">CH₃ adsorption</button></div>
+<div class="actions"><a id="scholarQuery" target="_blank" rel="noopener noreferrer" href="https://scholar.google.com/scholar?q=nitrogen-assisted%20diamond%20growth" data-i18n="scholar">Search on Google Scholar ↗</a></div>
+</section>
+<div class="tabs"><button id="tabResults" class="active" type="button" data-i18n="results">Search results</button><button id="tabSaved" type="button" data-i18n="saved">Saved references</button><span id="count" class="meta"></span></div>
+<p id="status" class="muted" role="status" aria-live="polite"></p>
+<div id="papers"></div>
+<footer data-i18n="footnote">Metadata source: OpenAlex public API. Google Scholar links open a separate search. Papers are not automatically reviewed; check original publications before using numerical DFT data. Saved references stay in this browser, or export them as JSON/CSV.</footer>
+</main>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var translations={
+en:{heading:"Live Literature Search",intro:"Search research papers via OpenAlex and cross-check on Google Scholar. No Google Scholar scraping.",keyword:"Research keywords",search:"Search papers",sort:"Sort by",relevance:"Relevance",newest:"Newest",cited:"Most cited",year:"From year (optional)",access:"Access",all:"All papers",openaccess:"Open access only",examples:"Examples:",scholar:"Search on Google Scholar ↗",results:"Search results",saved:"Saved references",footnote:"Metadata source: OpenAlex public API. Google Scholar links open a separate search. Papers are not automatically reviewed; check original publications before using numerical DFT data. Saved references stay in this browser, or export them as JSON/CSV.",loading:"Searching OpenAlex...",empty:"No matching papers found. Try broader keywords.",error:"OpenAlex could not be reached. You can still search on Google Scholar above. Please retry later.",savedinfo:"Reference saved in this browser.",removed:"Reference removed.",save:"Save reference",remove:"Remove saved",onScholar:"Verify on Scholar ↗",openDOI:"Open DOI ↗",openOA:"Open access ↗",abstract:"Abstract",missingAbstract:"Abstract not available through OpenAlex.",citation:"Citations",exportJson:"Export saved JSON",exportCsv:"Export saved CSV",noneSaved:"No saved references yet.",showing:"Showing",of:"of",more:"next results",total:"papers"},
+ko:{heading:"실시간 문헌 검색",intro:"OpenAlex에서 논문을 검색하고 Google Scholar에서 대조합니다. Scholar 자동 수집은 하지 않습니다.",keyword:"연구 키워드",search:"논문 검색",sort:"정렬",relevance:"관련성",newest:"최신순",cited:"인용순",year:"시작 연도 (선택)",access:"접근 방식",all:"모든 논문",openaccess:"오픈 액세스만",examples:"예시:",scholar:"Google Scholar에서 검색 ↗",results:"검색 결과",saved:"저장한 문헌",footnote:"메타데이터: OpenAlex 공개 API. Google Scholar 링크는 별도 검색창을 엽니다. DFT 수치는 반드시 원문으로 검증하세요. 저장 데이터는 이 브라우저에만 보관되며 JSON/CSV로 내보낼 수 있습니다.",loading:"OpenAlex 검색 중...",empty:"검색 결과가 없습니다. 키워드를 넓혀보세요.",error:"OpenAlex 연결에 실패했습니다. 위 Google Scholar 링크로 검색하거나 나중에 다시 시도하세요.",savedinfo:"브라우저에 저장했습니다.",removed:"저장 문헌을 제거했습니다.",save:"문헌 저장",remove:"저장 취소",onScholar:"Scholar에서 확인 ↗",openDOI:"DOI 열기 ↗",openOA:"원문 열기 ↗",abstract:"초록",missingAbstract:"OpenAlex에서 초록을 제공하지 않습니다.",citation:"인용",exportJson:"JSON 내려받기",exportCsv:"CSV 내려받기",noneSaved:"저장된 문헌이 없습니다.",showing:"표시",of:"총",more:"다음 결과",total:"건"},
+vi:{heading:"Tìm kiếm tài liệu khoa học",intro:"Tìm bài báo qua OpenAlex và đối chiếu trên Google Scholar. Không thu thập dữ liệu trực tiếp từ Scholar.",keyword:"Từ khóa nghiên cứu",search:"Tìm bài báo",sort:"Sắp xếp",relevance:"Liên quan nhất",newest:"Mới nhất",cited:"Trích dẫn nhiều",year:"Từ năm (tùy chọn)",access:"Quyền truy cập",all:"Tất cả",openaccess:"Chỉ truy cập mở",examples:"Gợi ý:",scholar:"Tìm trên Google Scholar ↗",results:"Kết quả tìm kiếm",saved:"Bài báo đã lưu",footnote:"Nguồn thông tin: OpenAlex API. Liên kết Scholar mở trang tìm kiếm riêng, không tự thu thập Scholar. Cần đối chiếu bài gốc trước khi dùng dữ liệu định lượng DFT. Bài báo được lưu trong trình duyệt này hoặc xuất JSON/CSV.",loading:"Đang tìm trên OpenAlex...",empty:"Không tìm thấy bài báo phù hợp. Hãy thử từ khóa rộng hơn.",error:"Không kết nối được OpenAlex. Bạn vẫn có thể tìm bằng Google Scholar ở trên hoặc thử lại sau.",savedinfo:"Đã lưu trong trình duyệt.",removed:"Đã bỏ lưu.",save:"Lưu bài báo",remove:"Bỏ lưu",onScholar:"Đối chiếu Scholar ↗",openDOI:"Mở DOI ↗",openOA:"Mở toàn văn ↗",abstract:"Tóm tắt",missingAbstract:"OpenAlex không cung cấp tóm tắt.",citation:"Lượt trích dẫn",exportJson:"Xuất JSON",exportCsv:"Xuất CSV",noneSaved:"Chưa lưu bài báo nào.",showing:"Hiển thị",of:"trong",more:"Tải thêm",total:"bài báo"}
+};
+var lang="en",results=[],saved=[],page=1,mode="results",busy=false,lastCount=0,controller=null;
+var key="surface_lab_literature_v1";
+try{saved=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(saved))saved=[];}catch(_){saved=[];}
+function t(k){return translations[lang][k]||k;}
+function escapeHtml(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function scholar(q){return "https://scholar.google.com/scholar?q="+encodeURIComponent(q);}
+function safeUrl(s){try{var u=new URL(s);return u.protocol==="https:"?u.href:"";}catch(_){return "";}}
+function normalize(w){
+var doi=w.doi&&safeUrl(w.doi)||"";
+var authors=(w.authorships||[]).slice(0,7).map(function(a){return a.author&&a.author.display_name||"";}).filter(Boolean);
+var oa=w.best_oa_location&&w.best_oa_location.landing_page_url||w.best_oa_location&&w.best_oa_location.pdf_url||w.open_access&&w.open_access.oa_url||"";
+return{id:w.id||doi,title:w.title||w.display_name||"Untitled",year:w.publication_year||"",doi:doi,authors:authors.join(", "),journal:w.primary_location&&w.primary_location.source&&w.primary_location.source.display_name||"",citations:Number(w.cited_by_count)||0,oa:safeUrl(oa),abstract:abstractText(w.abstract_inverted_index)};
+}
+function abstractText(inv){
+if(!inv||typeof inv!=="object")return "";
+var words=[];Object.keys(inv).forEach(function(word){(inv[word]||[]).forEach(function(index){if(Number.isInteger(index)&&index>=0&&index<4000)words[index]=word;});});
+return words.filter(Boolean).join(" ").slice(0,2200);
+}
+function saveStorage(){try{localStorage.setItem(key,JSON.stringify(saved));}catch(_){$("status").textContent="Browser storage unavailable; use JSON export.";}}
+function switchLang(l){lang=translations[l]?l:"en";document.documentElement.lang=lang;document.querySelectorAll("[data-i18n]").forEach(function(el){el.textContent=t(el.dataset.i18n);});document.querySelectorAll("[data-lang]").forEach(function(el){el.classList.toggle("active",el.dataset.lang===lang);});draw();}
+function status(s){$("status").textContent=s;}
+function filters(){
+var list=[];var y=$("year").value.trim();if(y&&Number(y)>=1900&&Number(y)<=2100)list.push("from_publication_date:"+y+"-01-01");
+if($("oa").value==="true")list.push("open_access.is_oa:true");
+return list;
+}
+function updateScholar(){ $("scholarQuery").href=scholar($("query").value.trim()||"diamond nitrogen CVD");}
+async function search(append){
+if(busy&&controller)controller.abort();
+if(!append){page=1;results=[];mode="results";}else page+=1;
+busy=true;controller=new AbortController();var current=controller;
+$("searchBtn").disabled=true;$("tabResults").classList.add("active");$("tabSaved").classList.remove("active");updateScholar();status(t("loading"));draw();
+var u=new URL("https://api.openalex.org/works");
+u.searchParams.set("search",$("query").value.trim());
+u.searchParams.set("per_page","20");u.searchParams.set("page",String(page));u.searchParams.set("sort",$("sort").value);
+var fs=filters();if(fs.length)u.searchParams.set("filter",fs.join(","));
+var timeout=setTimeout(function(){current.abort();},16000);
+try{
+var response=await fetch(u.href,{signal:current.signal,headers:{"Accept":"application/json"}});
+if(!response.ok)throw new Error("HTTP "+response.status);
+var data=await response.json();if(!Array.isArray(data.results))throw new Error("Invalid response");
+results=append?results.concat(data.results.map(normalize)):data.results.map(normalize);
+lastCount=Number(data.meta&&data.meta.count)||results.length;
+status(results.length?t("showing")+" "+results.length+" "+t("of")+" "+lastCount+" "+t("total"):t("empty"));
+}catch(err){if(current.signal.aborted&&controller!==current)return;page=append?Math.max(1,page-1):1;status(t("error")+" ("+String(err.message||"network error")+")");}
+finally{clearTimeout(timeout);if(controller===current){busy=false;$("searchBtn").disabled=false;draw();}}
+}
+function draw(){
+$("tabResults").classList.toggle("active",mode==="results");$("tabSaved").classList.toggle("active",mode==="saved");
+var list=mode==="saved"?saved:results;$("count").textContent=mode==="saved"?String(saved.length):results.length?results.length+" / "+lastCount:"";
+var h="";
+if(mode==="saved")h='<div class="actions"><button data-export="json">'+escapeHtml(t("exportJson"))+'</button><button data-export="csv">'+escapeHtml(t("exportCsv"))+'</button></div>';
+list.forEach(function(p){
+var isSaved=saved.some(function(x){return x.id===p.id;});
+h+='<article class="paper"><div class="meta">'+escapeHtml(p.year)+' · '+escapeHtml(p.journal||"Journal not specified")+' · '+escapeHtml(t("citation"))+': '+escapeHtml(p.citations)+'</div><div class="title">'+escapeHtml(p.title)+'</div><div class="meta">'+escapeHtml(p.authors)+'</div>';
+if(p.abstract)h+='<details style="margin-top:9px"><summary>'+escapeHtml(t("abstract"))+'</summary><p class="abstract">'+escapeHtml(p.abstract)+'</p></details>';
+h+='<div class="actions"><a target="_blank" rel="noopener noreferrer" href="'+escapeHtml(scholar(p.title))+'">'+escapeHtml(t("onScholar"))+'</a>';
+if(p.doi)h+='<a target="_blank" rel="noopener noreferrer" href="'+escapeHtml(p.doi)+'">'+escapeHtml(t("openDOI"))+'</a>';
+if(p.oa)h+='<a target="_blank" rel="noopener noreferrer" href="'+escapeHtml(p.oa)+'">'+escapeHtml(t("openOA"))+'</a>';
+h+='<button type="button" data-bookmark="'+escapeHtml(p.id)+'">'+escapeHtml(t(isSaved?"remove":"save"))+'</button></div></article>';
+});
+if(!list.length&&mode==="saved")h+='<p class="panel muted">'+escapeHtml(t("noneSaved"))+'</p>';
+if(!list.length&&mode==="results"&&!busy)h+='<p class="panel muted">'+escapeHtml(t("empty"))+'</p>';
+if(mode==="results"&&results.length&&results.length<lastCount)h+='<div class="actions"><button data-more="1"'+(busy?" disabled":"")+'>'+escapeHtml(t("more"))+'</button></div>';
+$("papers").innerHTML=h;
+}
+function exportSaved(fmt){
+var txt,filename,mime;
+if(fmt==="csv"){
+var fields=["title","authors","year","journal","doi","citations","oa","id"];
+var quote=function(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"';};
+txt=fields.join(",")+"\n"+saved.map(function(p){return fields.map(function(f){return quote(p[f]);}).join(",");}).join("\n");
+filename="surface-literature-saved.csv";mime="text/csv;charset=utf-8";
+}else{txt=JSON.stringify({source:"OpenAlex",verified:false,exported_at:new Date().toISOString(),papers:saved},null,2);filename="surface-literature-saved.json";mime="application/json";}
+var url=URL.createObjectURL(new Blob([txt],{type:mime}));var a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},500);
+}
+$("searchForm").addEventListener("submit",function(e){e.preventDefault();search(false);});
+$("query").addEventListener("input",updateScholar);
+document.querySelectorAll("[data-topic]").forEach(function(b){b.addEventListener("click",function(){$("query").value=b.dataset.topic;search(false);});});
+document.querySelectorAll("[data-lang]").forEach(function(b){b.addEventListener("click",function(){switchLang(b.dataset.lang);});});
+$("tabResults").addEventListener("click",function(){mode="results";draw();});
+$("tabSaved").addEventListener("click",function(){mode="saved";status("");draw();});
+$("papers").addEventListener("click",function(e){
+var b=e.target.closest("button");if(!b)return;
+if(b.dataset.more){search(true);return;}
+if(b.dataset.export){exportSaved(b.dataset.export);return;}
+if(b.dataset.bookmark){
+var id=b.dataset.bookmark;var index=saved.findIndex(function(p){return p.id===id;});
+if(index>=0){saved.splice(index,1);status(t("removed"));}
+else{var p=results.find(function(x){return x.id===id;});if(!p)return;saved.push(p);status(t("savedinfo"));}
+saveStorage();draw();
+}
+});
+switchLang("en");search(false);
+})();
+</script>
+</body></html>
