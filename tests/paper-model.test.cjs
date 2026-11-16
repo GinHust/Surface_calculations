@@ -33,15 +33,21 @@ test('invalid cells and unsupported repeat choices are rejected instead of produ
   for(const options of [{a:NaN},{ny:3},{nx:1},{pucZ:3},{vacuum:0},{cc:0},{ch:5},{nx:10,ny:10,pucZ:12}])assert.throws(()=>model.generatePair(options));
   const small=model.generatePair({nx:2,ny:2,pucZ:2});assert.equal(small.models[0].heavyAtoms,16);
 });
-test('paper-to-planner export supplies two drafts and explicitly missing reaction endpoints, never cross-composition NEB',()=>{
+test('paper-to-planner export focuses on two models and a downloadable VASP draft bundle',()=>{
   const pair=model.generatePair(),study=model.buildStudy(pair,profile);
-  assert.equal(study.configurations.length,7);assert.equal(study.configurations.filter(c=>c.attachment).length,2);assert.equal(study.groups.length,3);
+  assert.equal(study.configurations.length,2);assert.equal(study.configurations.filter(c=>c.attachment).length,2);assert.equal(study.groups.length,0);
   assert.equal(study.protocol.cutoff,'600');assert.equal(study.protocol.kpoints,'1 1 1');assert.equal(study.protocol.vacuum,'10');assert.equal(study.protocol.layers,'12');
-  for(const g of study.groups){const left=study.configurations.find(c=>c.id===g.left),right=study.configurations.find(c=>c.id===g.right);assert.equal(left.nitrogenSite,right.nitrogenSite);assert.equal(left.attachment,null);assert.equal(right.attachment,null);assert(planner.validateGroup(study,g,viewer.prepareFile).includes('structure'));}
+  assert(study.configurations[0].label.includes('Reference'));assert(study.configurations[1].label.includes('Nitrogen-promoted hypothesis'));
   const raw={version:1,locale:'en',activeId:study.id,studies:[study]};const restored=planner.validateDocument(raw,sources.map(s=>s.id),viewer.prepareFile);assert.deepEqual(restored,raw);
   assert(study.configurations.filter(c=>c.attachment).every(c=>c.assumptions.includes('Construction values:')));
-  assert(planner.jobPlan(study,viewer.prepareFile).jobs.filter(j=>j.groupId).every(j=>j.status==='blocked'));
-  assert(!study.configurations.some(c=>c.label.includes('C–C · state 5')));
+  const jobs=planner.jobPlan(study,viewer.prepareFile).jobs;assert.equal(jobs.length,4);assert(jobs.filter(j=>j.task==='relax').every(j=>j.status==='blocked'));
+  const bundle=model.calculationBundle(pair,profile),paths=bundle.map(([path])=>path);
+  assert(paths.includes('L01-two-model-comparison/01-reference-CC/POSCAR'));
+  assert(paths.includes('L01-two-model-comparison/02-nitrogen-CN/POSCAR'));
+  assert(paths.includes('L01-two-model-comparison/03-pathway-drafts/CC_4_to_6/INCAR.draft'));
+  assert(paths.includes('L01-two-model-comparison/03-pathway-drafts/CN_4_to_5/INCAR.draft'));
+  assert(paths.includes('L01-two-model-comparison/03-pathway-drafts/CN_5_to_6/INCAR.draft'));
+  const archive=model.zipStore(bundle);assert.equal(archive[0],0x50);assert.equal(archive[1],0x4b);assert(bundle.find(([path])=>path.endsWith('/README.md'))[1].includes('not computed outputs'));
 });
 
 test('planner accepts a generated study without replacing existing problems or losing coordinate files',()=>{
