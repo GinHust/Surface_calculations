@@ -26,10 +26,11 @@ If browser upload omits the hidden `.github` folder, use the simpler alternative
 - Run `python tools/build.py` (Python 3, no third-party packages).
 - Open `site/index.html` to review, then commit changed files.
 - `src/page-template.html` contains the exported viewer shell; normally leave it unchanged.
-- `data/literature-seed.json` is the initial research inventory. The mockup uses its own embedded `sources` records in `src/app.html`; this JSON is not loaded automatically. Keep both aligned when updating references.
+- `data/literature-seed.json` is the initial research inventory. The build embeds its source records into the application and generates the selected nitrogen-incorporation references on Literature Search. Rebuild after updating this JSON.
 
 ## What works
 
+- **Research Planner**: source-linked questions, multiple material configurations, provenance/assumptions, attached coordinate files, matched comparison groups, and dependency-aware calculation plans. Includes Vietnamese / English / Korean planner labels, adsorption/NEB planning templates, browser persistence and JSON import/export. See the [Vietnamese guide](docs/research-planner.vi.md).
 - Korean / English switching with shared screen and calculation state.
 - Embedded [3Dmol.js](https://3dmol.org/) structure viewer in **Problem & Conditions**: open POSCAR / CONTCAR (with element names), `.vasp`, `.cif`, or `.xyz`; switch between orthographic XY / XZ / YZ views and free rotation, toggle the unit cell and inferred bonds, zoom, and save PNG images.
 - Literature search, source links, and seed-data download.
@@ -44,13 +45,14 @@ No real SSH, server uploads, scheduler submissions, VASP / QE calculations, calc
 
 The viewer loads 3Dmol.js **2.5.5** from jsDelivr on first use and requires internet access and WebGL. It accepts up to 5 MB / 10,000 displayed atoms and shows the first XYZ frame. XYZ cell metadata is not interpreted; CIF symmetry handling is provided by 3Dmol. POSCAR scalar, negative-volume, and three-component scaling are normalized before rendering. Cartesian view axes are not necessarily crystallographic planes for tilted cells. Bonds are inferred from distances. The built-in diamond example is an ideal unit cell, not a reconstructed surface slab or a calculation result. QE `.in` files must be converted to a supported format first.
 
-Results and example free-energy barriers are synthetic. Quantitative literature barriers remain `null` pending primary-source verification. Seven source records and five reaction candidates are included. Source links and verification limits are documented in the research notes. This is a static prototype, not a shared research database or a restricted-access collaboration service.
+Results and example free-energy barriers are synthetic. Quantitative literature barriers remain `null` pending primary-source verification. Twelve source records and five reaction candidates are included. Source links and verification limits are documented in the research notes. This is a static prototype, not a shared research database or a restricted-access collaboration service.
 
 ## Repository structure
 
 ```text
 src/app.html                  Editable bilingual application fragment
 src/structure-viewer.js       Embedded structure viewer and format validation
+src/research-planner.js       Research plans, configuration records and comparison checks
 src/page-template.html        Exported viewer shell
 tools/build.py                Rebuild standalone pages
 site/index.html               GitHub Actions deployment target
@@ -61,6 +63,8 @@ docs/research-and-modules.ko.md  Research scope and module plan
 .github/workflows/pages.yml   Pages build and deployment
 ```
 
-Run `node --test tests/structure-viewer.test.cjs` to check coordinate normalization and malformed-file handling. `tests/fixtures/` includes small POSCAR, CIF and XYZ files for browser checks. Rebuild with `python tools/build.py` after changing either application source file.
+Run `node --test tests/*.test.cjs` to check coordinate normalization, malformed-file handling, scientific planning checks, JSON round-trips and Literature → Planner → draft-manifest integration. `tests/fixtures/` includes small POSCAR, CIF and XYZ files for browser checks. Rebuild with `python tools/build.py` after changing application source files.
+
+Research plans are not solver submissions. Attached coordinates persist in browser state when storage is available and are included in plan JSON exports; generated DFT input packages remain drafts without automatic coordinate/pseudopotential insertion. A complete planning record does not establish physical validity. Composition/cell checks require POSCAR; CIF remains a preview and XYZ lacks a periodic cell. Limits: eight problems, forty configurations/groups per problem, 200 KiB per coordinate file, 1 MiB per planning document. The standalone shell permits up to 2 MiB of widget state to accommodate the planning document and current draft context.
 
 The viewer was exported from the visualization used during design. External runtime resources remain referenced in the exported shell. No project-wide license is assigned in this package; choose one before licensing or redistributing the project more broadly. Referenced publications and software retain their respective rights and licenses.

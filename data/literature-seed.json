@@ -1,6 +1,6 @@
 {
-  "survey_date": "2026-11-03",
-  "scope": "nitrogen surface effect in diamond growth; DFT-Kinetics-COMSOL",
+  "survey_date": "2026-11-16",
+  "scope": "nitrogen incorporation into the diamond lattice and surface effects during CVD growth; DFT-Kinetics-COMSOL",
   "quantitative_barriers_verified": false,
   "sources": [
     {
@@ -64,6 +64,81 @@
       "caution": "표면 반응·NEB 템플릿의 적합성과 설치 엔진 지원은 별도 확인."
     },
     {
+      "id": "L05",
+      "kind": "질소 격자 편입",
+      "year": "2003",
+      "title": "Substitutional n-type doping of diamond",
+      "authors": "K. Larsson · Computational Materials Science 27, 23–29",
+      "url": "https://doi.org/10.1016/S0927-0256(02)00420-2",
+      "open": "https://www.sciencedirect.com/science/article/abs/pii/S0927025602004202",
+      "finding": "NHₓ 등의 화학흡착에서 표면 치환과 벌크 격자 편입으로 이어지는 경로를 DFT/HF로 열역학적으로 연구.",
+      "need": "흡착 N 종 → 표면 치환 N → 벌크 N 단계별 구조와 에너지 비교",
+      "status": "출판사 초록 확인",
+      "value": null,
+      "locator": "Publisher abstract",
+      "caution": "예비 열역학 연구이며 모든 단계의 전이상태나 속도상수를 검증한 자료는 아님. N·P·S 결과를 구분하고 수치는 원문 대조 후 등록."
+    },
+    {
+      "id": "L06",
+      "kind": "질소 격자 편입",
+      "year": "2008",
+      "title": "A theoretical study of the effect of nitrogen, boron and phosphorus impurities on the growth and morphology of diamond surfaces",
+      "authors": "Zoya Mehmood Shah & Alison Mainwood · Diamond Relat. Mater. 17, 1307–1310",
+      "url": "https://doi.org/10.1016/j.diamond.2008.03.028",
+      "open": "https://www.sciencedirect.com/science/article/pii/S0925963508002604",
+      "finding": "DFT로 서로 다른 diamond 성장면의 불순물 편입을 비교하고, 성장 구역 선호도와 표면 수소 종결 상태의 영향을 조사.",
+      "need": "표면 방향·종결 상태·깊이에 따른 치환 N의 안정성 비교",
+      "status": "출판사 초록·공개 발췌 확인",
+      "value": null,
+      "locator": "Abstract; Theoretical work; Conclusions (publisher excerpts)",
+      "caution": "표면 모델과 불순물 종류에 따라 결과가 달라짐. 안정성·결합에너지를 편입 활성화 장벽으로 사용하지 않음."
+    },
+    {
+      "id": "L07",
+      "kind": "표면 메커니즘",
+      "year": "2008",
+      "title": "A Theoretical Study of Nitrogen-Induced Effects on Initial Steps of Diamond CVD Growth",
+      "authors": "Tanguy Van Regemorter & Karin Larsson · Chemical Vapor Deposition 14, 224–231",
+      "url": "https://doi.org/10.1002/cvde.200706661",
+      "open": "https://onlinelibrary.wiley.com/doi/10.1002/cvde.200706661",
+      "finding": "(111) 및 (100)-2×1 면의 치환 N 위치에 따른 CH₃ 흡착과 흡착 CH₃의 H 제거를 비교. 두 번째 C 층의 N은 두 반응에 서로 다른 영향을 보임.",
+      "need": "N 깊이·표면 방향을 통제한 CH₃ 흡착 및 H 제거 비교",
+      "status": "출판사 초록 확인",
+      "value": null,
+      "locator": "Publisher abstract",
+      "caution": "이미 치환된 N이 초기 탄소 성장 반응에 미치는 영향에 관한 연구. 기상 N의 격자 진입 경로 전체를 입증하지 않음."
+    },
+    {
+      "id": "L08",
+      "kind": "성장·플라즈마",
+      "year": "2016",
+      "title": "Microwave Plasma-Activated Chemical Vapor Deposition of Nitrogen-Doped Diamond. II: CH4/N2/H2 Plasmas",
+      "authors": "Truscott, Kelly, Potter, Ashfold & Mankelevich · J. Phys. Chem. A 120, 8537–8549",
+      "url": "https://doi.org/10.1021/acs.jpca.6b09009",
+      "open": "https://www.chm.bris.ac.uk/pt/diamond/pdf/jcpa20-8537.pdf",
+      "finding": "분광 측정과 2D 반응·수송 모델로 기판 인근 N·NHₓ·CN 공급을 조사하고 공정 조건에 따른 N 편입 전구체의 가능성을 논의.",
+      "need": "N₂ 투입량과 기판 인근 반응성 N 종 농도를 구분한 표면 공급 조건",
+      "status": "저자 공개본 확인",
+      "value": null,
+      "locator": "Abstract; discussion on p. 8547",
+      "caution": "기상 종 농도는 격자 N 농도나 편입 효율과 같지 않음. 표면 편입 경로는 논의된 가능성이며 보편적으로 확정된 메커니즘이 아님."
+    },
+    {
+      "id": "L09",
+      "kind": "질소 격자 편입",
+      "year": "2014",
+      "title": "Perfect alignment and preferential orientation of nitrogen-vacancy centers during CVD growth of diamond on (111) surfaces",
+      "authors": "Julia Michl et al. · Applied Physics Letters 104, 102407",
+      "url": "https://doi.org/10.1063/1.4868128",
+      "open": "https://arxiv.org/abs/1401.4106",
+      "finding": "(111) CVD 성장에서 정렬된 NV 중심을 관찰하고, N이 성장면에 먼저 편입된 후 인접 vacancy가 형성되는 순서를 지지하는 실험 근거를 제시.",
+      "need": "(111) 성장 중 N 편입과 NV 형성의 순서·방향성 구분",
+      "status": "저자 공개 초록 확인",
+      "value": null,
+      "locator": "Author preprint abstract; journal reference on arXiv",
+      "caution": "NV 중심 형성·정렬에 관한 결과를 모든 치환 N의 편입 효율이나 (100) 성장률로 일반화하지 않음."
+    },
+    {
       "id": "D01",
       "kind": "입출력 규격",
       "year": "공식 문서",
@@ -114,7 +189,7 @@
       "id": "R01",
       "reaction": "H abstraction / passivation",
       "purpose": "활성 site 생성·소멸",
-      "source_ids": "L01 · L02",
+      "source_ids": "L01 · L02 · L07",
       "required_data": "장벽·흡착종·기상 H 조건",
       "barrier_eV": null
     },
@@ -122,7 +197,7 @@
       "id": "R02",
       "reaction": "CH₃ adsorption",
       "purpose": "탄소 전구체 포획",
-      "source_ids": "L01 · L02",
+      "source_ids": "L01 · L02 · L07",
       "required_data": "흡착 site·sticking·피복률",
       "barrier_eV": null
     },
@@ -146,7 +221,7 @@
       "id": "R05",
       "reaction": "N incorporation / burial",
       "purpose": "N 활성 상태의 생성·소멸",
-      "source_ids": "L01",
+      "source_ids": "L01 · L05 · L09",
       "required_data": "N 위치·수명·편입 경로",
       "barrier_eV": null
     }

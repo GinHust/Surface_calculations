@@ -1637,9 +1637,9 @@ html&gt;body{padding:0}&lt;/style&gt;
       ...parsedState,
     };
     const serializedState = stringify(storedState);
-    if (encode(serializedState).length &gt; 16 * 1024) {
+    if (encode(serializedState).length &gt; 2 * 1024 * 1024) {
       throw new TypeError(
-        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
+        &quot;Widget state must be a JSON object of at most 2 MiB&quot;,
       );
     }
     if (
@@ -2423,10 +2423,10 @@ __SURFACE_APP_ESCAPED__
   const parseState = (serializedState) => {
     if (
       typeof serializedState !== "string" ||
-      new TextEncoder().encode(serializedState).length > 16 * 1024
+      new TextEncoder().encode(serializedState).length > 2 * 1024 * 1024
     ) {
       throw new TypeError(
-        "Widget state must be a JSON object of at most 16 KiB",
+        "Widget state must be a JSON object of at most 2 MiB",
       );
     }
     /** @type {unknown} */
@@ -2450,9 +2450,9 @@ __SURFACE_APP_ESCAPED__
         return value;
       },
     );
-    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
+    if (new TextEncoder().encode(canonicalState).length > 2 * 1024 * 1024) {
       throw new TypeError(
-        "Widget state must be a JSON object of at most 16 KiB",
+        "Widget state must be a JSON object of at most 2 MiB",
       );
     }
     return storedState;

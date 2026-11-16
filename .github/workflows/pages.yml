@@ -20,6 +20,11 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check structure parsing and research planning
+        run: node --test tests/*.test.cjs
       - name: Build standalone page
         run: python tools/build.py
       - name: Configure Pages

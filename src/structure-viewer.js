@@ -229,6 +229,7 @@
     // Keep one canvas/context while the surrounding app rerenders or changes pages.
     new ResizeObserver(() => { if (viewer && canvas.isConnected && canvas.clientWidth) { viewer.resize(); viewer.render(); } }).observe(canvas);
     return {
+      loadFile(name, text) { return load(name, () => Promise.resolve(text)); },
       mount(host, nextLocale) { locale = nextLocale; host.appendChild(panel); update(); if (viewer) { viewer.resize(); viewer.render(); } }
     };
   }

@@ -1,6 +1,6 @@
 # Surface Compute Lab — 초기 DB 조사 및 모듈 구성
 
-조사일: 2026-11-03. 목적: 소그룹의 문헌·계산 데이터 축적, DFT 실행 인터페이스, Kinetics–COMSOL 후처리 연계. 회의 운영·논문 작성 기능은 범위에서 제외한다.
+조사일: 2026-11-03. 질소 격자 편입 문헌 추가: 2026-11-16. 목적: 소그룹의 문헌·계산 데이터 축적, DFT 실행 인터페이스, Kinetics–COMSOL 후처리 연계. 회의 운영·논문 작성 기능은 범위에서 제외한다.
 
 ## 1. 초기 자료 목록
 
@@ -10,6 +10,11 @@
 | L02 | Ashfold & Mankelevich, *Diamond Relat. Mater.* 137 (2023) 110097. [논문](https://doi.org/10.1016/j.diamond.2023.110097), [저자 공개본](https://www.chm.bris.ac.uk/pt/diamond/pdf/drm137-110097.pdf) | 국소 기상 분포·성장률 모델, N anchor와 CH₂ 이동·편입의 가설 | §3 성장률식, §4 메커니즘, 조건별 유효 범위. anchor는 검증 대상 가설 |
 | L03 | Sabadell-Rendón et al., *Digital Discovery* 2 (2023) 1721–1732. [논문](https://doi.org/10.1039/D3DD00163F), [AMUSE 코드](https://github.com/LopezGroup-ICIQ/amuse) | DFT 결과→반응망→microkinetics→CFD 연결, AutoProfLib·PyMKM | 공개 튜토리얼 재현, VASP 의존부와 diamond 성장 적용부 구분. COMSOL용 구현은 별도 |
 | L04 | Wang et al., *npj Computational Materials* 12, 72 (2026). [논문](https://doi.org/10.1038/s41524-025-01936-4), [코드](https://github.com/aiidalab/aiidalab-qe) | 구조·조건 입력, HPC 제출·모니터링·결과 조회의 웹 인터페이스 사례 | 그룹 서버·엔진 지원, 표면 반응·NEB를 위한 확장 범위 |
+| L05 | K. Larsson · Computational Materials Science 27, 23–29. [Substitutional n-type doping of diamond](https://doi.org/10.1016/S0927-0256(02)00420-2) | NHₓ 등의 화학흡착에서 표면 치환과 벌크 격자 편입으로 이어지는 경로를 DFT/HF로 열역학적으로 연구. | 예비 열역학 연구이며 모든 단계의 전이상태나 속도상수를 검증한 자료는 아님. N·P·S 결과를 구분하고 수치는 원문 대조 후 등록. |
+| L06 | Zoya Mehmood Shah & Alison Mainwood · Diamond Relat. Mater. 17, 1307–1310. [A theoretical study of the effect of nitrogen, boron and phosphorus impurities on the growth and morphology of diamond surfaces](https://doi.org/10.1016/j.diamond.2008.03.028) | DFT로 서로 다른 diamond 성장면의 불순물 편입을 비교하고, 성장 구역 선호도와 표면 수소 종결 상태의 영향을 조사. | 표면 모델과 불순물 종류에 따라 결과가 달라짐. 안정성·결합에너지를 편입 활성화 장벽으로 사용하지 않음. |
+| L07 | Tanguy Van Regemorter & Karin Larsson · Chemical Vapor Deposition 14, 224–231. [A Theoretical Study of Nitrogen-Induced Effects on Initial Steps of Diamond CVD Growth](https://doi.org/10.1002/cvde.200706661) | (111) 및 (100)-2×1 면의 치환 N 위치에 따른 CH₃ 흡착과 흡착 CH₃의 H 제거를 비교. 두 번째 C 층의 N은 두 반응에 서로 다른 영향을 보임. | 이미 치환된 N이 초기 탄소 성장 반응에 미치는 영향에 관한 연구. 기상 N의 격자 진입 경로 전체를 입증하지 않음. |
+| L08 | Truscott, Kelly, Potter, Ashfold & Mankelevich · J. Phys. Chem. A 120, 8537–8549. [Microwave Plasma-Activated Chemical Vapor Deposition of Nitrogen-Doped Diamond. II: CH4/N2/H2 Plasmas](https://doi.org/10.1021/acs.jpca.6b09009) | 분광 측정과 2D 반응·수송 모델로 기판 인근 N·NHₓ·CN 공급을 조사하고 공정 조건에 따른 N 편입 전구체의 가능성을 논의. | 기상 종 농도는 격자 N 농도나 편입 효율과 같지 않음. 표면 편입 경로는 논의된 가능성이며 보편적으로 확정된 메커니즘이 아님. |
+| L09 | Julia Michl et al. · Applied Physics Letters 104, 102407. [Perfect alignment and preferential orientation of nitrogen-vacancy centers during CVD growth of diamond on (111) surfaces](https://doi.org/10.1063/1.4868128) | (111) CVD 성장에서 정렬된 NV 중심을 관찰하고, N이 성장면에 먼저 편입된 후 인접 vacancy가 형성되는 순서를 지지하는 실험 근거를 제시. | NV 중심 형성·정렬에 관한 결과를 모든 치환 N의 편입 효율이나 (100) 성장률로 일반화하지 않음. |
 | D01 | [VASP 공식 입출력 문서](https://vasp.at/wiki/Input_and_Output_-_a_short_Intro) | INCAR/POSCAR/KPOINTS/POTCAR, OUTCAR/OSZICAR/CONTCAR 등 | 설치 버전·허가된 POTCAR 라이브러리·종 순서·checksum |
 | D02 | QE 공식 [pw.x](https://www.quantum-espresso.org/Doc/INPUT_PW.html), [neb.x](https://www.quantum-espresso.org/Doc/INPUT_NEB.html) | namelist, 종·셀·좌표·k-point 카드, NEB 이미지 입력 | 엔진 버전·UPF, nat/ntyp, spin·전하, 단위와 경로 검증 |
 | D03 | [COMSOL 공식 앱 예제](https://doc.comsol.com/6.3/doc/com.comsol.help.comsol/application_builder_introduction.08.120.html) | Tubular Reactor 등 제한된 입력·출력으로 모델을 실행하는 앱 사례 | 그룹 보유 버전·모듈·실제 모델 변수와 외부 데이터 연결 |
