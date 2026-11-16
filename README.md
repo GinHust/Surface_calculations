@@ -31,6 +31,7 @@ If browser upload omits the hidden `.github` folder, use the simpler alternative
 ## What works
 
 - Korean / English switching with shared screen and calculation state.
+- Embedded [3Dmol.js](https://3dmol.org/) structure viewer in **Problem & Conditions**: open POSCAR / CONTCAR (with element names), `.vasp`, `.cif`, or `.xyz`; switch between orthographic XY / XZ / YZ views and free rotation, toggle the unit cell and inferred bonds, zoom, and save PNG images.
 - Literature search, source links, and seed-data download.
 - Problem and condition editing; VASP / Quantum ESPRESSO **draft** input generation.
 - Slurm / PBS job-script drafts and simulated job-state progression.
@@ -39,7 +40,9 @@ If browser upload omits the hidden `.github` folder, use the simpler alternative
 
 ## Scope and data
 
-No real SSH, uploads, scheduler submissions, VASP / QE calculations, output parsing, or COMSOL execution are performed. Structure-file selection shows the filename only. Generated drafts have unresolved structure and pseudopotential requirements and are not runnable input packages. POTCAR / UPF files and credentials are not included.
+No real SSH, server uploads, scheduler submissions, VASP / QE calculations, calculation-output parsing, or COMSOL execution are performed. The structure viewer reads local files in browser memory; reopen the file after a page refresh. Viewing does not validate the structure for computation or populate generated input drafts. Generated drafts have unresolved structure and pseudopotential requirements and are not runnable input packages. POTCAR / UPF files and credentials are not included.
+
+The viewer loads 3Dmol.js **2.5.5** from jsDelivr on first use and requires internet access and WebGL. It accepts up to 5 MB / 10,000 displayed atoms and shows the first XYZ frame. XYZ cell metadata is not interpreted; CIF symmetry handling is provided by 3Dmol. POSCAR scalar, negative-volume, and three-component scaling are normalized before rendering. Cartesian view axes are not necessarily crystallographic planes for tilted cells. Bonds are inferred from distances. The built-in diamond example is an ideal unit cell, not a reconstructed surface slab or a calculation result. QE `.in` files must be converted to a supported format first.
 
 Results and example free-energy barriers are synthetic. Quantitative literature barriers remain `null` pending primary-source verification. Seven source records and five reaction candidates are included. Source links and verification limits are documented in the research notes. This is a static prototype, not a shared research database or a restricted-access collaboration service.
 
@@ -47,6 +50,7 @@ Results and example free-energy barriers are synthetic. Quantitative literature 
 
 ```text
 src/app.html                  Editable bilingual application fragment
+src/structure-viewer.js       Embedded structure viewer and format validation
 src/page-template.html        Exported viewer shell
 tools/build.py                Rebuild standalone pages
 site/index.html               GitHub Actions deployment target
@@ -56,5 +60,7 @@ docs/SHARING.ko.md            Korean upload instructions
 docs/research-and-modules.ko.md  Research scope and module plan
 .github/workflows/pages.yml   Pages build and deployment
 ```
+
+Run `node --test tests/structure-viewer.test.cjs` to check coordinate normalization and malformed-file handling. `tests/fixtures/` includes small POSCAR, CIF and XYZ files for browser checks. Rebuild with `python tools/build.py` after changing either application source file.
 
 The viewer was exported from the visualization used during design. External runtime resources remain referenced in the exported shell. No project-wide license is assigned in this package; choose one before licensing or redistributing the project more broadly. Referenced publications and software retain their respective rights and licenses.

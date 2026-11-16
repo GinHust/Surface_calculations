@@ -5,6 +5,11 @@ from html import escape
 ROOT = Path(__file__).resolve().parents[1]
 template = (ROOT / 'src/page-template.html').read_text(encoding='utf-8')
 fragment = (ROOT / 'src/app.html').read_text(encoding='utf-8')
+viewer_marker = '__STRUCTURE_VIEWER_JS__'
+if fragment.count(viewer_marker) != 1:
+    raise ValueError('Expected exactly one structure viewer placeholder')
+viewer = (ROOT / 'src/structure-viewer.js').read_text(encoding='utf-8')
+fragment = fragment.replace(viewer_marker, viewer.replace('</script', '<\\/script'))
 marker = '__SURFACE_APP_ESCAPED__'
 if template.count(marker) != 1:
     raise ValueError('Expected exactly one application placeholder')

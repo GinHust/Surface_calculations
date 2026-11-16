@@ -1,0 +1,11 @@
+Asymmetric cell - viewer test only
+2
+2 0 0
+0 3 0
+0 0 4
+C H
+1 1
+Selective dynamics
+Direct
+0.1 0.2 0.3 F F F
+0.4 0.2 0.3 T T T
