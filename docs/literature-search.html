@@ -147,6 +147,11 @@ body.embedded main{padding-top:4px}#curatedReferences>summary{cursor:pointer;fon
 #surface-lab-bilingual fieldset {border-radius:9px; background:#fbfdfe}
 #surface-lab-bilingual #sl-message:empty {display:none}
 #surface-lab-bilingual .paper-search-actions {margin-bottom:17px; gap:10px}
+#surface-lab-bilingual .inventory-counts {display:flex;align-items:center;gap:27px;padding:0 0 8px}
+#surface-lab-bilingual .inventory-counts>div {display:flex;align-items:baseline;gap:8px}
+#surface-lab-bilingual .inventory-counts strong {font-size:21px;font-weight:700;line-height:1.3;letter-spacing:-.6px;color:#214958}
+#surface-lab-bilingual .inventory-counts span {font-size:10px;color:#6d8290;line-height:1.5;max-width:90px}
+#surface-lab-bilingual .source-list {max-height:740px;overflow-y:auto;padding:2px 4px 2px 2px;scrollbar-width:thin;scrollbar-color:#b9d1d8 transparent}
 #surface-lab-bilingual [data-action=find-papers],#surface-lab-bilingual [data-action=related-papers] {color:#087f82; border-color:#b7d9d6; background:#f2faf8}
 @media(min-width:1350px) {#surface-lab-bilingual main{padding:40px}#surface-lab-bilingual .split{gap:28px}}
 @media(max-width:1050px) {#surface-lab-bilingual .shell{grid-template-columns:190px minmax(0,1fr)}#surface-lab-bilingual main{padding:25px}#surface-lab-bilingual h1{font-size:27px}}
@@ -181,6 +186,11 @@ body.embedded main{padding-top:4px}#curatedReferences>summary{cursor:pointer;fon
   #surface-lab-bilingual .flow{gap:2px}
   #surface-lab-bilingual .flow button{padding:7px;font-size:10px}
   #surface-lab-bilingual .paper-search-actions>.small{display:none}
+  #surface-lab-bilingual .inventory-counts{gap:19px}
+  #surface-lab-bilingual .inventory-counts>div{display:block}
+  #surface-lab-bilingual .inventory-counts strong,#surface-lab-bilingual .inventory-counts span{display:block}
+  #surface-lab-bilingual .inventory-counts span{font-size:9px;margin-top:4px}
+  #surface-lab-bilingual .source-list{max-height:470px}
 }
 
 /* The standalone search and its embedded view use the same components. */
