@@ -41,6 +41,7 @@ test('paper-to-planner export focuses on two models and a downloadable VASP draf
   const raw={version:1,locale:'en',activeId:study.id,studies:[study]};const restored=planner.validateDocument(raw,sources.map(s=>s.id),viewer.prepareFile);assert.deepEqual(restored,raw);
   assert(study.configurations.filter(c=>c.attachment).every(c=>c.assumptions.includes('Construction values:')));
   const jobs=planner.jobPlan(study,viewer.prepareFile).jobs;assert.equal(jobs.length,4);assert(jobs.filter(j=>j.task==='relax').every(j=>j.status==='blocked'));
+  const problemOnly=model.buildStudy(null,profile);assert.equal(problemOnly.configurations.length,2);assert(problemOnly.configurations.every(c=>c.attachment===null));assert(problemOnly.criterion.includes('within'));assert(problemOnly.question.includes('lower the activation barriers'));
   const bundle=model.calculationBundle(pair,profile),paths=bundle.map(([path])=>path);
   assert(paths.includes('L01-two-model-comparison/01-reference-CC/POSCAR'));
   assert(paths.includes('L01-two-model-comparison/02-nitrogen-CN/POSCAR'));
