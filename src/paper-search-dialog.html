@@ -1,0 +1,16 @@
+<style>
+#paper-search-dialog{box-sizing:border-box;width:min(1120px,96vw);height:92vh;max-height:92vh;padding:0;border:1px solid #b8ced6;border-radius:10px;background:#f3f6f8;color:#163746;overflow:hidden}
+#paper-search-dialog::backdrop{background:rgba(10,30,40,.55)}
+#paper-search-dialog .paper-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px;border-bottom:1px solid #d8e4e9;background:#fff;font:14px system-ui}
+#paper-search-dialog h2{font-size:18px;margin:0}#paper-search-dialog .paper-dialog-actions{display:flex;gap:12px;align-items:center}
+#paper-search-dialog a{color:#087c83}#paper-search-dialog button{font:inherit;padding:7px 12px;border:1px solid #b8ced6;border-radius:6px;background:#fff;color:#163746;cursor:pointer}
+#paper-search-dialog iframe{display:block;width:100%;height:calc(100% - 61px);margin:0;border:0}
+@media(max-width:600px){#paper-search-dialog .paper-dialog-header{padding:10px;gap:6px}#paper-search-dialog h2{font-size:15px}#paper-search-dialog a{font-size:12px}}
+</style>
+<dialog id="paper-search-dialog" aria-labelledby="paper-search-heading">
+  <div class="paper-dialog-header"><h2 id="paper-search-heading">Find research papers</h2><div class="paper-dialog-actions"><a id="paper-search-full" href="./literature-search.html" target="_blank" rel="noopener noreferrer">Open full page ↗</a><button id="paper-search-close" type="button" aria-label="Close paper search">Close</button></div></div>
+  <iframe id="paper-search-frame" title="Research paper search" referrerpolicy="no-referrer"></iframe>
+</dialog>
+<script>
+__PAPER_SEARCH_BRIDGE_JS__
+</script>

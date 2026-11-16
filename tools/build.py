@@ -25,6 +25,12 @@ marker = '__SURFACE_APP_ESCAPED__'
 if template.count(marker) != 1:
     raise ValueError('Expected exactly one application placeholder')
 page = template.replace(marker, escape(fragment))
+dialog = (ROOT / 'src/paper-search-dialog.html').read_text(encoding='utf-8')
+bridge = (ROOT / 'src/paper-search-bridge.js').read_text(encoding='utf-8')
+if dialog.count('__PAPER_SEARCH_BRIDGE_JS__') != 1:
+    raise ValueError('Expected exactly one paper search bridge placeholder')
+dialog = dialog.replace('__PAPER_SEARCH_BRIDGE_JS__', bridge.replace('</script', '<\\/script'))
+page = page.replace('</body>', dialog + '\n</body>', 1)
 # Top-level navigation (outside the sandboxed application iframe).
 literature_nav = (
     '<div style="font:14px system-ui;padding:8px 16px;background:#173744;'

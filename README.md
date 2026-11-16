@@ -34,6 +34,7 @@ If browser upload omits the hidden `.github` folder, use the simpler alternative
 - English-only interface with shared screen and calculation state.
 - Embedded [3Dmol.js](https://3dmol.org/) structure viewer in **Problem & Conditions**: open POSCAR / CONTCAR (with element names), `.vasp`, `.cif`, or `.xyz`; switch between orthographic XY / XZ / YZ views and free rotation, toggle the unit cell and inferred bonds, zoom, and save PNG images.
 - Literature search, source links, and seed-data download.
+- **Find papers online** opens paper search inside the website from Literature, using the current keywords. **Find related papers** in Problem & Conditions uses the current research question. Closing the search returns to the same calculation screen; unchanged searches retain their results. The full search page remains available.
 - Problem and condition editing; VASP / Quantum ESPRESSO **draft** input generation.
 - Slurm / PBS job-script drafts and simulated job-state progression.
 - Synthetic result plots and an adjustable TST demonstration.
