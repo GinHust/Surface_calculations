@@ -25,6 +25,15 @@ if fragment.count(planner_marker) != 1:
     raise ValueError('Expected exactly one research planner placeholder')
 planner = (ROOT / 'src/research-planner.js').read_text(encoding='utf-8')
 fragment = fragment.replace(planner_marker, planner.replace('</script', '<\\/script'))
+paper_model_marker = '__PAPER_MODEL_JS__'
+if fragment.count(paper_model_marker) != 1:
+    raise ValueError('Expected exactly one paper model placeholder')
+paper_model = (ROOT / 'src/paper-model.js').read_text(encoding='utf-8')
+fragment = fragment.replace(paper_model_marker, paper_model.replace('</script', '<\\/script'))
+profile = json.loads((ROOT / 'data/l01-model.json').read_text(encoding='utf-8'))
+if fragment.count('__L01_PROFILE_JSON__') != 1:
+    raise ValueError('Expected exactly one L01 model profile placeholder')
+fragment = fragment.replace('__L01_PROFILE_JSON__', json.dumps(profile, ensure_ascii=False).replace('</', '<\\/'))
 marker = '__SURFACE_APP_ESCAPED__'
 if template.count(marker) != 1:
     raise ValueError('Expected exactly one application placeholder')

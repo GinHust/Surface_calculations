@@ -113,6 +113,7 @@
       const s={id:identity(item.id),question:text(item.question),criterion:text(item.criterion),sourceIds:[...new Set(item.sourceIds.filter(v=>knownSourceIds.includes(v)))],protocol:{},configurations:[],groups:[]};
       if(!item.protocol||!['VASP','Quantum ESPRESSO'].includes(item.protocol.engine))throw new Error('schema');
       for(const key of ['engine','xc','cutoff','kpoints','pseudo','convergence'])s.protocol[key]=text(item.protocol[key]);
+      for(const key of ['vacuum','layers','scf','force','fixedLayers'])if(item.protocol[key]!==undefined)s.protocol[key]=text(item.protocol[key]);
       for(const source of item.configurations) {
         const c={id:identity(source.id)};
         for(const key of ['label','orientation','termination','cellModel','nitrogenSite','adsorbate','charge','spin','origin','sourceId','locator','assumptions'])c[key]=text(source[key]);
@@ -275,6 +276,11 @@
       restore(value){try{data=validateDocument(value,known,parser);render();}catch(_){notice=t('error');render();}},
       setStorage(value){storage=value;if(host?.isConnected){const el=host.querySelector('[data-rp-storage]');if(el)el.textContent=t(storage);}},
       snapshot(){return copy(data);}
+      ,addStudy(value){
+        const checked=validateDocument({version:VERSION,locale:'en',activeId:value.id,studies:[value]},known,parser).studies[0];
+        commit(()=>{data.studies.push(checked);data.activeId=checked.id;selected='';previewing='';});
+        return data.studies.some(s=>s.id===checked.id);
+      }
     };
   }
   const api={create,empty,study,template,configuration,inspectStructure,validateGroup,jobPlan,validateDocument,sameCounts,sameCell,VERSION};

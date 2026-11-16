@@ -191,7 +191,7 @@
         if (atoms.length > MAX_ATOMS) fail('limit');
         if (model) { viewer.removeUnitCell(model); viewer.removeModel(model); }
         model = candidate; candidate = null;
-        record = {name, count: atoms.length, hasCell: Boolean(model.getCrystData()), demo: isDemo};
+        record = {name, count: atoms.length, hasCell: Boolean(model.getCrystData()), demo: isDemo, format: prepared.format, text: prepared.format === 'vasp' ? text : null};
         style(); orient('top');
         onLoad?.(record);
       } catch (err) {

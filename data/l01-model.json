@@ -1,0 +1,39 @@
+{
+  "source_id": "L01",
+  "title": "Nitrogen overgrowth as a catalytic mechanism during diamond chemical vapour deposition",
+  "version": "arXiv:2011.04921v1, 10 November 2020; includes supplementary material",
+  "url": "https://arxiv.org/html/2011.04921v1",
+  "doi": "https://doi.org/10.1016/j.carbon.2021.03.008",
+  "reviewed_on": "2026-11-16",
+  "coordinate_status": "No POSCAR, CONTCAR, CIF, XYZ or other atomic-coordinate file was found in the inspected arXiv v1 source archive. This does not establish that no author coordinates exist elsewhere.",
+  "reported": [
+    {"field": "Surface", "value": "H-terminated diamond (100), reconstructed 2×1", "locator": "Main text §1; Supplement §2"},
+    {"field": "Carbon slab", "value": "240 C; 5×4×6 primitive-unit-cell dimensions", "locator": "Main text §1"},
+    {"field": "Lattice constant", "value": "3.573 Å (PBE optimum)", "locator": "Supplement §1.2"},
+    {"field": "Vacuum separation", "value": "10 Å", "locator": "Main text §1"},
+    {"field": "Electronic method", "value": "VASP, PAW, PBE; selected B3LYP checks", "locator": "Main text §1; Supplement introduction"},
+    {"field": "Plane-wave cutoff / k points", "value": "600 eV / Γ only for the slab", "locator": "Main text §1"},
+    {"field": "Electronic / force tolerance", "value": "0.1 meV / 0.05 eV/Å", "locator": "Main text §1"},
+    {"field": "Relaxation constraints", "value": "Top two primitive-cell layers: all directions; remaining ions: surface-normal direction only", "locator": "Main text §1"},
+    {"field": "Nitrogen motif", "value": "Surface C–N dimer; a C–H group is replaced by N with a lone pair", "locator": "Introduction, Figure 2"},
+    {"field": "Reaction to study", "value": "C–C branch: 4→6; C–N branch: 4→5→6", "locator": "Main text §§2.1–2.2, Figures 1–4"}
+  ],
+  "defaults": {"a": 3.573, "nx": 5, "ny": 4, "pucZ": 6, "vacuum": 10, "cc": 1.54, "ch": 1.09},
+  "assumptions": [
+    "Coordinates are generated geometric starting guesses, not the authors' optimized structures.",
+    "The orthogonal surface axes are [110], [-110] and [001], crystallographically equivalent to a (100)-family slab. Dimers run along the model y direction.",
+    "Six primitive-cell thickness units are represented by twelve carbon atomic planes. Each plane contains nx×ny sites, giving 240 heavy-atom sites for the default model.",
+    "Surface atoms on both faces are paired into flat, unbuckled dimers. The absolute C–C dimer distance 1.54 Å and C–H distance 1.09 Å are user-adjustable construction assumptions, not values extracted from this paper.",
+    "The selected C–N dimer is shortened by the reported 5.5% relative to the assumed C–C distance; this is an initial guess, not an optimized C–N bond length.",
+    "Hydrogen directions are constructed opposite the sum of normalized neighboring C/N bond vectors. One top-surface H is removed at the N substitution site.",
+    "The 10 Å vacuum is implemented as the total periodic gap between the outermost atoms, with half of that gap on each side of the slab.",
+    "No methyl adsorbate, state-4/state-5/state-6 coordinates, transition state or electronic energy is inferred from figures. These remain missing inputs."
+  ],
+  "missing": [
+    "Authors' relaxed coordinates and exact atom-to-figure mapping",
+    "Adsorbed CH₂ and ring-opening/closing endpoint geometries",
+    "Pseudopotential identities, versions and usable local files",
+    "Convergence reproduction, dipole settings and spin-state review",
+    "Relaxed endpoints, atom mapping and a validated NEB path"
+  ]
+}

@@ -31,6 +31,7 @@ If browser upload omits the hidden `.github` folder, use the simpler alternative
 ## What works
 
 - **Research Planner**: source-linked questions, multiple material configurations, provenance/assumptions, attached coordinate files, matched comparison groups, and dependency-aware calculation plans. Available as an optional Advanced comparison planning button inside Problem & Conditions. Includes adsorption/NEB planning templates, browser persistence and JSON import/export. See the [Vietnamese guide](docs/research-planner.vi.md).
+- **Paper → Structure builder (L01 example)**: presents reported values with paper/SI locations, separates them from explicit geometric assumptions, generates C–C and surface-embedded C–N starting POSCARs, previews either model in 3D, and exports the model specification. It can add seven paper-linked configurations and three within-branch NEB plans to the Research Planner. Only the two base slabs contain generated coordinates; adsorbate/reaction-state endpoints remain missing and the NEB jobs remain blocked until supplied. This is a reviewed, paper-specific reconstruction workflow, not automatic extraction for arbitrary papers.
 - English-only interface with shared screen and calculation state.
 - Embedded [3Dmol.js](https://3dmol.org/) structure viewer in **Problem & Conditions**: open POSCAR / CONTCAR (with element names), `.vasp`, `.cif`, or `.xyz`; switch between orthographic XY / XZ / YZ views and free rotation, toggle the unit cell and inferred bonds, zoom, and save PNG images.
 - Literature search, source links, and seed-data download.
@@ -44,7 +45,7 @@ If browser upload omits the hidden `.github` folder, use the simpler alternative
 
 No real SSH, server uploads, scheduler submissions, VASP / QE calculations, calculation-output parsing, or COMSOL execution are performed. The structure viewer reads local files in browser memory; reopen the file after a page refresh. Viewing does not validate the structure for computation or populate generated input drafts. Generated drafts have unresolved structure and pseudopotential requirements and are not runnable input packages. POTCAR / UPF files and credentials are not included.
 
-The viewer loads 3Dmol.js **2.5.5** from jsDelivr on first use and requires internet access and WebGL. It accepts up to 5 MB / 10,000 displayed atoms and shows the first XYZ frame. XYZ cell metadata is not interpreted; CIF symmetry handling is provided by 3Dmol. POSCAR scalar, negative-volume, and three-component scaling are normalized before rendering. Cartesian view axes are not necessarily crystallographic planes for tilted cells. Bonds are inferred from distances. The built-in diamond example is an ideal unit cell, not a reconstructed surface slab or a calculation result. QE `.in` files must be converted to a supported format first.
+The viewer loads 3Dmol.js **2.5.5** from jsDelivr on first use and requires internet access and WebGL. It accepts up to 5 MB / 10,000 displayed atoms and shows the first XYZ frame. XYZ cell metadata is not interpreted; CIF symmetry handling is provided by 3Dmol. POSCAR scalar, negative-volume, and three-component scaling are normalized before rendering. Cartesian view axes are not necessarily crystallographic planes for tilted cells. Bonds are inferred from distances. The built-in diamond example is an ideal unit cell, not a reconstructed surface slab or a calculation result. The L01 builder's generated slab coordinates use stated, adjustable bond-length assumptions and require geometry relaxation and independent structural review. They are not author coordinates; reaction geometries and transition states are not inferred from paper figures. QE `.in` files must be converted to a supported format first.
 
 Results and example free-energy barriers are synthetic. Quantitative literature barriers remain `null` pending primary-source verification. Twelve source records and five reaction candidates are included. Source links and verification limits are documented in the research notes. This is a static prototype, not a shared research database or a restricted-access collaboration service.
 
@@ -54,6 +55,8 @@ Results and example free-energy barriers are synthetic. Quantitative literature 
 src/app.html                  Editable bilingual application fragment
 src/structure-viewer.js       Embedded structure viewer and format validation
 src/research-planner.js       Research plans, configuration records and comparison checks
+src/paper-model.js            Paper-grounded L01 model construction and POSCAR drafts
+data/l01-model.json           Reported L01 settings, source locations and explicit assumptions
 src/page-template.html        Exported viewer shell
 tools/build.py                Rebuild standalone pages
 site/index.html               GitHub Actions deployment target
