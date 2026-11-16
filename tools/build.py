@@ -2,6 +2,7 @@
 from pathlib import Path
 from html import escape
 import json
+import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 template = (ROOT / 'src/page-template.html').read_text(encoding='utf-8')
@@ -86,4 +87,9 @@ for destination in [ROOT / 'literature-search.html',
 (ROOT / 'index.html').write_text(page, encoding='utf-8')
 for directory in [ROOT, ROOT / 'site', ROOT / 'docs']:
     (directory / '.nojekyll').write_text('', encoding='utf-8')
+for directory in [ROOT / 'site', ROOT / 'docs']:
+    helper_dir = directory / 'tools'
+    helper_dir.mkdir(parents=True, exist_ok=True)
+    for helper_name in ['build_potcar.py', 'POTCAR_BUILDER.md']:
+        shutil.copy2(ROOT / 'tools' / helper_name, helper_dir / helper_name)
 print('Built main page and literature search for root, site and docs')
