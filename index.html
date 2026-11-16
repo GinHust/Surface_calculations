@@ -8,9 +8,245 @@
 <title>Surface Compute Lab | Diamond Surface Research</title>
 <style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
 
+<style>
+/* Shared visual language. Keep the existing navigation and calculation flow. */
+#surface-lab-bilingual {
+  color-scheme: light;
+  --p: #ffffff; --bg: #f4f7fa; --ink: #152b3b; --sub: #607385;
+  --line: #e0e8ee; --accent: #087f82; --soft: #eaf7f5;
+  --warn: #805b24; --warnbg: #fff7e8;
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px; line-height: 1.65;
+  border: 1px solid #dce6ed; border-radius: 18px;
+  box-shadow: 0 12px 48px #1737470a;
+}
+#surface-lab-bilingual .top {
+  min-height: 82px; padding: 20px 30px; gap: 18px;
+  background: #fff; border-bottom-color: var(--line);
+}
+#surface-lab-bilingual .brand {
+  display: inline-flex; align-items: center; gap: 13px;
+  font-size: 17px; font-weight: 750; letter-spacing: 1.2px;
+}
+#surface-lab-bilingual .brand::before {
+  content: ''; display: block; width: 23px; height: 23px;
+  border: 2px solid #087f82; border-radius: 5px; transform: rotate(45deg);
+  background: linear-gradient(135deg,#e0f4f0 49%,#087f82 50%,#087f82 55%,#f4fbfa 56%);
+  box-shadow: 4px -4px 0 #e4f1f0;
+}
+#surface-lab-bilingual .top>.muted {font-size: 12px; padding-left: 18px; border-left: 1px solid var(--line)}
+#surface-lab-bilingual .top>.pill {margin-left: auto; font-size: 11px; letter-spacing: .3px}
+#surface-lab-bilingual .shell {grid-template-columns: 218px minmax(0,1fr)}
+#surface-lab-bilingual aside {padding: 28px 14px; background: #122b39; color: #c3d3dd}
+#surface-lab-bilingual .sidehead {font-size: 10px; letter-spacing: 1.7px; color: #829eae; padding: 0 14px 20px}
+#surface-lab-bilingual .nav {
+  position: relative; min-height: 48px; gap: 12px; padding: 12px 14px;
+  margin: 5px 0; border: 1px solid transparent; border-radius: 9px;
+  font-size: 12px; font-weight: 550; line-height: 1.4;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+#surface-lab-bilingual .nav svg {width: 17px; height: 17px; stroke-width: 1.6; flex: 0 0 auto; opacity: .85}
+#surface-lab-bilingual .nav:hover {background: #ffffff0b; color: #fff}
+#surface-lab-bilingual .nav[aria-current=page] {background: #1b444f; border-color: #2d6269; color: #d4ffef; box-shadow: 0 5px 14px #071c2720}
+#surface-lab-bilingual .nav[aria-current=page]::before {content:''; position:absolute; left:-15px; top:13px; bottom:13px; width:3px; border-radius:2px; background:#76ddc5}
+#surface-lab-bilingual .sidefoot {border-top:1px solid #ffffff15; padding-top:22px; margin:42px 14px 0; font-size:11px; line-height:1.9; color:#9fb7c4}
+#surface-lab-bilingual main {padding: 34px; min-height: 820px; background: var(--bg)}
+#surface-lab-bilingual .headline {margin-bottom: 26px}
+#surface-lab-bilingual .headline>.small {font-size:10px; font-weight:700; letter-spacing:1.8px; color:var(--accent); margin-bottom:8px}
+#surface-lab-bilingual h1 {font-size:30px; line-height:1.22; font-weight:720; letter-spacing:-1px; margin:7px 0 11px}
+#surface-lab-bilingual .headline>.muted {font-size:13px; max-width:750px; line-height:1.75}
+#surface-lab-bilingual h2 {font-size:16px; font-weight:680; letter-spacing:-.2px; margin-bottom:17px}
+#surface-lab-bilingual h3 {font-size:13px; font-weight:650; letter-spacing:-.1px}
+#surface-lab-bilingual .small {font-size:11px; line-height:1.75}
+#surface-lab-bilingual .pill {padding:5px 10px; border:1px solid #d4ebe5; border-radius:20px; font-weight:600; line-height:1.4}
+#surface-lab-bilingual .panel {padding:24px; border-radius:14px; border-color:var(--line); box-shadow:0 3px 12px #17374704; margin-bottom:20px}
+#surface-lab-bilingual .split {gap:22px; align-items:start; grid-template-columns:minmax(0,1.12fr) minmax(280px,1fr)}
+#surface-lab-bilingual .fields {gap:0 18px}
+#surface-lab-bilingual label {font-size:11px; font-weight:650; letter-spacing:.1px; color:#53697a; margin-bottom:16px}
+#surface-lab-bilingual input,#surface-lab-bilingual select,#surface-lab-bilingual textarea {
+  min-height:42px; padding:10px 12px; margin-top:7px;
+  border:1px solid #d9e4eb; border-radius:8px; background:#fbfdfe;
+  font-size:13px; font-weight:400; color:var(--ink); line-height:1.5;
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+#surface-lab-bilingual input::placeholder,#surface-lab-bilingual textarea::placeholder {color:#899ba8}
+#surface-lab-bilingual input:focus,#surface-lab-bilingual select:focus,#surface-lab-bilingual textarea:focus {
+  outline:none; border-color:#238e91; box-shadow:0 0 0 3px #09818415; background:#fff;
+}
+#surface-lab-bilingual input[type=checkbox] {min-height:0; width:15px; height:15px; accent-color:var(--accent); margin-top:3px; flex:0 0 auto}
+#surface-lab-bilingual input[type=file] {padding:8px; font-size:11px}
+#surface-lab-bilingual input::file-selector-button {border:0; background:#eaf3f5; color:#355e6e; padding:7px 9px; border-radius:5px; margin-right:10px; cursor:pointer}
+#surface-lab-bilingual button:focus-visible,#surface-lab-bilingual a:focus-visible {outline:3px solid #46b7b2; outline-offset:3px}
+#surface-lab-bilingual .button {
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  min-height:38px; padding:9px 13px; border-radius:8px;
+  font-size:12px; font-weight:600; line-height:1.4;
+  border-color:#d7e3e9; background:#fff;
+  box-shadow:0 1px 2px #15374606;
+  transition:background .16s ease, border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+#surface-lab-bilingual .button:hover:not(:disabled) {background:#f3f9f9; border-color:#9ccac9; transform:translateY(-1px); box-shadow:0 4px 10px #1537460a}
+#surface-lab-bilingual .button svg {width:15px; height:15px; stroke-width:1.8}
+#surface-lab-bilingual .primary {background:#087f82; border-color:#087f82; color:#fff; box-shadow:0 4px 12px #087f8220}
+#surface-lab-bilingual .primary:hover:not(:disabled) {background:#066c70; border-color:#066c70; color:#fff}
+#surface-lab-bilingual a {text-decoration:none; font-weight:550; text-underline-offset:3px}
+#surface-lab-bilingual a:hover {text-decoration:underline}
+#surface-lab-bilingual .dbitem {
+  position:relative; border-radius:11px; padding:17px 18px; margin-bottom:11px;
+  border-color:#e0e8ee; box-shadow:0 2px 5px #17374703;
+  transition:box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+}
+#surface-lab-bilingual .dbitem:hover {border-color:#a6caca; box-shadow:0 5px 17px #17374708; transform:translateY(-1px)}
+#surface-lab-bilingual .dbitem.selected {background:#f0faf8; border-color:#66b9b0; box-shadow:0 0 0 1px #66b9b010}
+#surface-lab-bilingual .dbitem.selected::before {content:''; position:absolute; left:-1px; top:14px; bottom:14px; width:3px; border-radius:3px; background:#159a8e}
+#surface-lab-bilingual .dbitem strong {font-size:13px; line-height:1.65; font-weight:650; letter-spacing:-.15px; margin:7px 0}
+#surface-lab-bilingual .dbitem>.small:first-child {font-size:10px; font-weight:650; color:#087f82; letter-spacing:.2px}
+#surface-lab-bilingual .record {background:#f2f8fa; border-left:3px solid #4faaa4; border-radius:0 8px 8px 0; padding:13px 15px; font-size:13px; line-height:1.85; margin:18px 0}
+#surface-lab-bilingual .item {padding:17px 0}
+#surface-lab-bilingual .item h3 {margin-bottom:7px}
+#surface-lab-bilingual .item p {font-size:12px; line-height:1.8}
+#surface-lab-bilingual .notice,#surface-lab-bilingual .banner {border-radius:9px; padding:13px 16px; font-size:12px; line-height:1.8; border:1px solid #f0e3c9}
+#surface-lab-bilingual .banner {border-color:#d5ebe5}
+#surface-lab-bilingual .flow {gap:8px; color:#a6b7c2; font-size:10px; margin-bottom:25px}
+#surface-lab-bilingual .flow button {padding:7px 11px; border-radius:7px; background:transparent; font-size:11px; color:var(--sub); border-color:transparent}
+#surface-lab-bilingual .flow button:hover {background:#eaf0f5}
+#surface-lab-bilingual .flow button[aria-current=step] {background:#fff; color:#087f82; border-color:#cde4e4; box-shadow:0 2px 6px #17374704}
+#surface-lab-bilingual .tablebox {border:1px solid var(--line); border-radius:9px}
+#surface-lab-bilingual th {background:#f5f8fa; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase}
+#surface-lab-bilingual td,#surface-lab-bilingual th {padding:12px 13px}
+#surface-lab-bilingual td {font-size:12px}
+#surface-lab-bilingual tbody tr:last-child td {border-bottom:0}
+#surface-lab-bilingual tbody tr:hover {background:#f7fbfc}
+#surface-lab-bilingual pre {background:#142d3b; color:#d8e9ef; border-radius:10px; padding:19px; font-size:11px; line-height:1.85}
+#surface-lab-bilingual .empty {background:#f6f9fb; border:1px dashed #cbdce5; border-radius:10px; padding:30px 18px; font-size:12px}
+#surface-lab-bilingual .structure-stage {height:390px; border-radius:12px; border-color:#dbe6ed; background:#f4f8fb}
+#surface-lab-bilingual .structure-empty {font-size:13px; color:#6c8492}
+#surface-lab-bilingual .structure-empty::before {content:'◇'; font-size:50px; font-weight:200; color:#b7d4d8; margin-right:18px}
+#surface-lab-bilingual .check {font-weight:400; line-height:1.7; gap:5px}
+#surface-lab-bilingual .statrow b {font-weight:700; letter-spacing:-.7px; font-size:25px}
+#surface-lab-bilingual [data-rp-storage] {color:#087f82; font-weight:600}
+#surface-lab-bilingual fieldset {border-radius:9px; background:#fbfdfe}
+#surface-lab-bilingual #sl-message:empty {display:none}
+#surface-lab-bilingual .paper-search-actions {margin-bottom:17px; gap:10px}
+#surface-lab-bilingual [data-action=find-papers],#surface-lab-bilingual [data-action=related-papers] {color:#087f82; border-color:#b7d9d6; background:#f2faf8}
+@media(min-width:1350px) {#surface-lab-bilingual main{padding:40px}#surface-lab-bilingual .split{gap:28px}}
+@media(max-width:1050px) {#surface-lab-bilingual .shell{grid-template-columns:190px minmax(0,1fr)}#surface-lab-bilingual main{padding:25px}#surface-lab-bilingual h1{font-size:27px}}
+@media(max-width:820px) {
+  #surface-lab-bilingual{border-radius:12px}
+  #surface-lab-bilingual .shell{grid-template-columns:1fr}
+  #surface-lab-bilingual .split{grid-template-columns:1fr}
+  #surface-lab-bilingual .top{padding:18px 21px;min-height:74px;gap:13px}
+  #surface-lab-bilingual .top>.muted{font-size:11px}
+  #surface-lab-bilingual aside{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:10px 14px;scrollbar-width:thin}
+  #surface-lab-bilingual .nav{width:auto;flex:0 0 auto;white-space:nowrap;margin:0;min-height:40px;padding:10px 12px;font-size:11px}
+  #surface-lab-bilingual .nav[aria-current=page]::before{display:none}
+  #surface-lab-bilingual .sidehead,#surface-lab-bilingual .sidefoot{display:none}
+  #surface-lab-bilingual main{padding:24px;min-height:0}
+}
+@media(max-width:520px) {
+  #surface-lab-bilingual .top{padding:17px;gap:10px}
+  #surface-lab-bilingual .brand{font-size:14px;gap:10px}
+  #surface-lab-bilingual .brand::before{width:19px;height:19px}
+  #surface-lab-bilingual .top>.muted{display:none}
+  #surface-lab-bilingual .top>.pill{font-size:9px;padding:5px 8px}
+  #surface-lab-bilingual main{padding:23px 16px}
+  #surface-lab-bilingual h1{font-size:25px;letter-spacing:-.7px}
+  #surface-lab-bilingual .headline>.small{font-size:9px;letter-spacing:1.2px}
+  #surface-lab-bilingual .headline>.muted{font-size:12px}
+  #surface-lab-bilingual .panel{padding:18px;border-radius:12px}
+  #surface-lab-bilingual .fields{grid-template-columns:1fr}
+  #surface-lab-bilingual .button{font-size:11px}
+  #surface-lab-bilingual .dbitem{padding:15px}
+  #surface-lab-bilingual .structure-stage{height:285px}
+  #surface-lab-bilingual .structure-empty::before{display:none}
+  #surface-lab-bilingual .flow{gap:2px}
+  #surface-lab-bilingual .flow button{padding:7px;font-size:10px}
+  #surface-lab-bilingual .paper-search-actions>.small{display:none}
+}
+
+/* The standalone search and its embedded view use the same components. */
+body.literature-app {color-scheme:light; --ink:#152b3b; --muted:#607385; --bg:#f4f7fa; --edge:#e0e8ee; --accent:#087f82; --soft:#eaf7f5; font-family:Inter,'Segoe UI',system-ui,sans-serif; font-size:14px; line-height:1.7}
+body.literature-app header {background:#122b39; padding:19px max(24px,calc((100vw - 1080px)/2)); border-bottom:1px solid #244251}
+body.literature-app header a {font-size:12px; font-weight:600; color:#d2e9ea}
+body.literature-app main {max-width:1080px; padding:35px 24px 50px}
+body.literature-app h1 {font-size:32px; letter-spacing:-1px; font-weight:730; margin-bottom:8px}
+body.literature-app h2 {letter-spacing:-.3px}
+body.literature-app .panel,body.literature-app .paper {border-radius:14px; border-color:var(--edge); box-shadow:0 3px 15px #15374604; padding:23px}
+body.literature-app .paper {margin:14px 0; transition:border-color .18s ease,box-shadow .18s ease}
+body.literature-app .paper:hover {border-color:#b7d7d5; box-shadow:0 5px 20px #15374609}
+body.literature-app .title {font-size:16px; font-weight:680; letter-spacing:-.25px; line-height:1.65; margin:8px 0}
+body.literature-app .meta {font-size:11px; line-height:1.8}
+body.literature-app .paper>.meta:first-child {font-weight:600; color:#087f82; letter-spacing:.15px}
+body.literature-app input,body.literature-app select {padding:11px 13px; border:1px solid #d9e4eb; border-radius:8px; font-size:13px; background:#fbfdfe; min-height:44px}
+body.literature-app label {font-size:11px; color:#53697a; letter-spacing:.2px; font-weight:650}
+body.literature-app input:focus,body.literature-app select:focus {outline:none; border-color:#238e91; box-shadow:0 0 0 3px #09818415; background:#fff}
+body.literature-app button,body.literature-app .actions a {font-size:12px; font-weight:600; border-radius:8px; border-color:#d7e3e9; transition:background .16s ease, border-color .16s ease}
+body.literature-app button:hover,body.literature-app .actions a:hover {background:#f0f8f7; border-color:#a9cecb; text-decoration:none}
+body.literature-app button.primary {background:#087f82; border-color:#087f82; color:#fff; padding:12px 21px; box-shadow:0 4px 12px #087f821a}
+body.literature-app button.primary:hover {background:#066c70}
+body.literature-app button:focus-visible,body.literature-app a:focus-visible,body.literature-app summary:focus-visible {outline:3px solid #46b7b2; outline-offset:3px}
+body.literature-app .quick {gap:7px; padding-top:4px}
+body.literature-app .quick button {font-size:11px; padding:6px 10px; color:#536d79; background:#f6f9fa}
+body.literature-app .actions {gap:8px; margin-top:14px}
+body.literature-app .actions a,body.literature-app .actions button {font-size:11px; padding:7px 10px; min-height:32px}
+body.literature-app .actions button[data-bookmark] {margin-left:auto; color:#087f82; border-color:#bcdbd5; background:#f0f9f6}
+body.literature-app .tabs {gap:5px; padding:5px; background:#eaf0f4; border:1px solid #e0e8ee; border-radius:11px; margin-top:20px}
+body.literature-app .tabs button {border-color:transparent; background:transparent; color:#617785; padding:9px 15px; font-size:12px}
+body.literature-app .tabs button.active {background:#fff; color:#087f82; box-shadow:0 2px 5px #15374609; border-color:#e0e8ee}
+body.literature-app #count {margin-left:auto; padding:0 10px; font-variant-numeric:tabular-nums}
+body.literature-app #status {font-size:12px; margin:14px 2px 5px; color:#607385}
+body.literature-app .abstract {font-size:12px; line-height:1.85; background:#f5f9fb; border-radius:8px; padding:14px}
+body.literature-app details summary {font-size:12px; color:#4d6f7b; cursor:pointer}
+body.literature-app footer {padding:18px 0; font-size:11px; line-height:1.8; border-top:1px solid var(--edge); color:#748794}
+body.literature-app.embedded main {padding-top:4px}
+@media(max-width:620px) {
+  body.literature-app main{padding:22px 15px 35px}
+  body.literature-app .panel,body.literature-app .paper{padding:18px;border-radius:11px}
+  body.literature-app h1{font-size:27px}
+  body.literature-app .title{font-size:14px}
+  body.literature-app .controls{grid-template-columns:1fr}
+  body.literature-app .tabs button{padding:8px 10px;font-size:11px}
+  body.literature-app #count{font-size:10px;padding:0 3px}
+  body.literature-app .actions button[data-bookmark]{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce) {
+  #surface-lab-bilingual *,body.literature-app * {transition:none!important;scroll-behavior:auto!important}
+  #surface-lab-bilingual .button:hover,#surface-lab-bilingual .dbitem:hover {transform:none}
+}
+
+/* Shell and paper-search dialog. Scoped to avoid changing iframe contents. */
+html[data-visualize-standalone]:has(>body.surface-host) {color-scheme:light; background:#edf2f6}
+html[data-visualize-standalone]>body.surface-host {padding:20px; background:#edf2f6; max-width:1640px; margin:0 auto}
+#surface-utility-bar {display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 5px 15px; font:11px/1.5 'Segoe UI',system-ui,sans-serif; color:#6a8290; letter-spacing:.2px}
+#surface-utility-bar a {color:#087f82; text-decoration:none; font-weight:650; padding:5px 0}
+#surface-utility-bar a:hover {text-decoration:underline}
+#paper-search-dialog {width:min(1140px,95vw); height:92vh; max-height:92vh; border:1px solid #d9e5ec; border-radius:17px; background:#f4f7fa; box-shadow:0 30px 100px #0a23354a; padding:0}
+#paper-search-dialog::backdrop {background:#0c263a9c; backdrop-filter:blur(5px)}
+#paper-search-dialog .paper-dialog-header {min-height:72px; padding:17px 24px; font-family:Inter,'Segoe UI',system-ui,sans-serif; border-bottom-color:#e0e8ee}
+#paper-search-dialog h2 {font-size:17px; font-weight:700; letter-spacing:-.4px; color:#152b3b}
+#paper-search-dialog .paper-dialog-actions {gap:18px}
+#paper-search-dialog a {font-size:11px; font-weight:600; color:#087f82}
+#paper-search-dialog button {border-color:#d7e3e9; padding:8px 13px; border-radius:8px; font-size:12px; font-weight:600}
+#paper-search-dialog button:hover {background:#eef7f5; border-color:#a6ccca}
+#paper-search-dialog button:focus-visible {outline:3px solid #46b7b2; outline-offset:3px}
+#paper-search-dialog iframe {height:calc(100% - 73px); background:#f4f7fa}
+@media(max-width:620px) {
+  html[data-visualize-standalone]>body.surface-host{padding:8px}
+  #surface-utility-bar{padding:2px 5px 10px;font-size:10px}
+  #surface-utility-bar>span{font-size:9px;letter-spacing:.1px}
+  #paper-search-dialog{width:calc(100vw - 16px);max-width:calc(100vw - 16px);border-radius:12px;height:94vh;max-height:94vh}
+  #paper-search-dialog .paper-dialog-header{padding:13px;min-height:63px;gap:7px}
+  #paper-search-dialog h2{font-size:14px}
+  #paper-search-dialog .paper-dialog-actions{gap:9px}
+  #paper-search-dialog a{font-size:10px}
+  #paper-search-dialog button{padding:7px 10px;font-size:11px}
+  #paper-search-dialog iframe{height:calc(100% - 64px)}
+}
+
+</style>
 </head>
-<body>
-<div style="font:14px system-ui;padding:8px 16px;background:#173744;color:#fff;text-align:center"><a href="./literature-search.html" style="color:#d5f7f3;font-weight:600;text-decoration:none">🔎 Live Literature Search · Google Scholar ↗</a></div>
+<body class="surface-host">
+<div id="surface-utility-bar"><span>DIAMOND SURFACE RESEARCH</span><a href="./literature-search.html">Explore scientific literature ↗</a></div>
 <iframe id="codex-visualization" sandbox="allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" title="Surface Compute Lab | Diamond Surface Research" data-srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot; data-visualize-standalone&gt;
 &lt;head&gt;
@@ -1833,8 +2069,242 @@ html&gt;body{padding:0}&lt;/style&gt;
 #surface-lab-bilingual .structure-note{margin-top:12px}
 @media(max-width:440px){#surface-lab-bilingual .structure-stage{height:300px}}
 #surface-lab-bilingual .rp-selected{background:var(--soft)}#surface-lab-bilingual .rp-source-list{max-height:180px;overflow:auto}#surface-lab-bilingual fieldset{border:1px solid var(--line);border-radius:6px;margin:12px 0;padding:12px}#surface-lab-bilingual legend{font-size:13px;color:var(--sub)}#surface-lab-bilingual [data-rp-notice]{color:var(--warn)}#surface-lab-bilingual [data-rp-viewer]:empty{display:none}#surface-lab-bilingual [data-rp-action]:disabled{opacity:.45;cursor:not-allowed}
+/* Shared visual language. Keep the existing navigation and calculation flow. */
+#surface-lab-bilingual {
+  color-scheme: light;
+  --p: #ffffff; --bg: #f4f7fa; --ink: #152b3b; --sub: #607385;
+  --line: #e0e8ee; --accent: #087f82; --soft: #eaf7f5;
+  --warn: #805b24; --warnbg: #fff7e8;
+  font-family: Inter, &#x27;Segoe UI&#x27;, system-ui, sans-serif;
+  font-size: 14px; line-height: 1.65;
+  border: 1px solid #dce6ed; border-radius: 18px;
+  box-shadow: 0 12px 48px #1737470a;
+}
+#surface-lab-bilingual .top {
+  min-height: 82px; padding: 20px 30px; gap: 18px;
+  background: #fff; border-bottom-color: var(--line);
+}
+#surface-lab-bilingual .brand {
+  display: inline-flex; align-items: center; gap: 13px;
+  font-size: 17px; font-weight: 750; letter-spacing: 1.2px;
+}
+#surface-lab-bilingual .brand::before {
+  content: &#x27;&#x27;; display: block; width: 23px; height: 23px;
+  border: 2px solid #087f82; border-radius: 5px; transform: rotate(45deg);
+  background: linear-gradient(135deg,#e0f4f0 49%,#087f82 50%,#087f82 55%,#f4fbfa 56%);
+  box-shadow: 4px -4px 0 #e4f1f0;
+}
+#surface-lab-bilingual .top&gt;.muted {font-size: 12px; padding-left: 18px; border-left: 1px solid var(--line)}
+#surface-lab-bilingual .top&gt;.pill {margin-left: auto; font-size: 11px; letter-spacing: .3px}
+#surface-lab-bilingual .shell {grid-template-columns: 218px minmax(0,1fr)}
+#surface-lab-bilingual aside {padding: 28px 14px; background: #122b39; color: #c3d3dd}
+#surface-lab-bilingual .sidehead {font-size: 10px; letter-spacing: 1.7px; color: #829eae; padding: 0 14px 20px}
+#surface-lab-bilingual .nav {
+  position: relative; min-height: 48px; gap: 12px; padding: 12px 14px;
+  margin: 5px 0; border: 1px solid transparent; border-radius: 9px;
+  font-size: 12px; font-weight: 550; line-height: 1.4;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+#surface-lab-bilingual .nav svg {width: 17px; height: 17px; stroke-width: 1.6; flex: 0 0 auto; opacity: .85}
+#surface-lab-bilingual .nav:hover {background: #ffffff0b; color: #fff}
+#surface-lab-bilingual .nav[aria-current=page] {background: #1b444f; border-color: #2d6269; color: #d4ffef; box-shadow: 0 5px 14px #071c2720}
+#surface-lab-bilingual .nav[aria-current=page]::before {content:&#x27;&#x27;; position:absolute; left:-15px; top:13px; bottom:13px; width:3px; border-radius:2px; background:#76ddc5}
+#surface-lab-bilingual .sidefoot {border-top:1px solid #ffffff15; padding-top:22px; margin:42px 14px 0; font-size:11px; line-height:1.9; color:#9fb7c4}
+#surface-lab-bilingual main {padding: 34px; min-height: 820px; background: var(--bg)}
+#surface-lab-bilingual .headline {margin-bottom: 26px}
+#surface-lab-bilingual .headline&gt;.small {font-size:10px; font-weight:700; letter-spacing:1.8px; color:var(--accent); margin-bottom:8px}
+#surface-lab-bilingual h1 {font-size:30px; line-height:1.22; font-weight:720; letter-spacing:-1px; margin:7px 0 11px}
+#surface-lab-bilingual .headline&gt;.muted {font-size:13px; max-width:750px; line-height:1.75}
+#surface-lab-bilingual h2 {font-size:16px; font-weight:680; letter-spacing:-.2px; margin-bottom:17px}
+#surface-lab-bilingual h3 {font-size:13px; font-weight:650; letter-spacing:-.1px}
+#surface-lab-bilingual .small {font-size:11px; line-height:1.75}
+#surface-lab-bilingual .pill {padding:5px 10px; border:1px solid #d4ebe5; border-radius:20px; font-weight:600; line-height:1.4}
+#surface-lab-bilingual .panel {padding:24px; border-radius:14px; border-color:var(--line); box-shadow:0 3px 12px #17374704; margin-bottom:20px}
+#surface-lab-bilingual .split {gap:22px; align-items:start; grid-template-columns:minmax(0,1.12fr) minmax(280px,1fr)}
+#surface-lab-bilingual .fields {gap:0 18px}
+#surface-lab-bilingual label {font-size:11px; font-weight:650; letter-spacing:.1px; color:#53697a; margin-bottom:16px}
+#surface-lab-bilingual input,#surface-lab-bilingual select,#surface-lab-bilingual textarea {
+  min-height:42px; padding:10px 12px; margin-top:7px;
+  border:1px solid #d9e4eb; border-radius:8px; background:#fbfdfe;
+  font-size:13px; font-weight:400; color:var(--ink); line-height:1.5;
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+#surface-lab-bilingual input::placeholder,#surface-lab-bilingual textarea::placeholder {color:#899ba8}
+#surface-lab-bilingual input:focus,#surface-lab-bilingual select:focus,#surface-lab-bilingual textarea:focus {
+  outline:none; border-color:#238e91; box-shadow:0 0 0 3px #09818415; background:#fff;
+}
+#surface-lab-bilingual input[type=checkbox] {min-height:0; width:15px; height:15px; accent-color:var(--accent); margin-top:3px; flex:0 0 auto}
+#surface-lab-bilingual input[type=file] {padding:8px; font-size:11px}
+#surface-lab-bilingual input::file-selector-button {border:0; background:#eaf3f5; color:#355e6e; padding:7px 9px; border-radius:5px; margin-right:10px; cursor:pointer}
+#surface-lab-bilingual button:focus-visible,#surface-lab-bilingual a:focus-visible {outline:3px solid #46b7b2; outline-offset:3px}
+#surface-lab-bilingual .button {
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  min-height:38px; padding:9px 13px; border-radius:8px;
+  font-size:12px; font-weight:600; line-height:1.4;
+  border-color:#d7e3e9; background:#fff;
+  box-shadow:0 1px 2px #15374606;
+  transition:background .16s ease, border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+#surface-lab-bilingual .button:hover:not(:disabled) {background:#f3f9f9; border-color:#9ccac9; transform:translateY(-1px); box-shadow:0 4px 10px #1537460a}
+#surface-lab-bilingual .button svg {width:15px; height:15px; stroke-width:1.8}
+#surface-lab-bilingual .primary {background:#087f82; border-color:#087f82; color:#fff; box-shadow:0 4px 12px #087f8220}
+#surface-lab-bilingual .primary:hover:not(:disabled) {background:#066c70; border-color:#066c70; color:#fff}
+#surface-lab-bilingual a {text-decoration:none; font-weight:550; text-underline-offset:3px}
+#surface-lab-bilingual a:hover {text-decoration:underline}
+#surface-lab-bilingual .dbitem {
+  position:relative; border-radius:11px; padding:17px 18px; margin-bottom:11px;
+  border-color:#e0e8ee; box-shadow:0 2px 5px #17374703;
+  transition:box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+}
+#surface-lab-bilingual .dbitem:hover {border-color:#a6caca; box-shadow:0 5px 17px #17374708; transform:translateY(-1px)}
+#surface-lab-bilingual .dbitem.selected {background:#f0faf8; border-color:#66b9b0; box-shadow:0 0 0 1px #66b9b010}
+#surface-lab-bilingual .dbitem.selected::before {content:&#x27;&#x27;; position:absolute; left:-1px; top:14px; bottom:14px; width:3px; border-radius:3px; background:#159a8e}
+#surface-lab-bilingual .dbitem strong {font-size:13px; line-height:1.65; font-weight:650; letter-spacing:-.15px; margin:7px 0}
+#surface-lab-bilingual .dbitem&gt;.small:first-child {font-size:10px; font-weight:650; color:#087f82; letter-spacing:.2px}
+#surface-lab-bilingual .record {background:#f2f8fa; border-left:3px solid #4faaa4; border-radius:0 8px 8px 0; padding:13px 15px; font-size:13px; line-height:1.85; margin:18px 0}
+#surface-lab-bilingual .item {padding:17px 0}
+#surface-lab-bilingual .item h3 {margin-bottom:7px}
+#surface-lab-bilingual .item p {font-size:12px; line-height:1.8}
+#surface-lab-bilingual .notice,#surface-lab-bilingual .banner {border-radius:9px; padding:13px 16px; font-size:12px; line-height:1.8; border:1px solid #f0e3c9}
+#surface-lab-bilingual .banner {border-color:#d5ebe5}
+#surface-lab-bilingual .flow {gap:8px; color:#a6b7c2; font-size:10px; margin-bottom:25px}
+#surface-lab-bilingual .flow button {padding:7px 11px; border-radius:7px; background:transparent; font-size:11px; color:var(--sub); border-color:transparent}
+#surface-lab-bilingual .flow button:hover {background:#eaf0f5}
+#surface-lab-bilingual .flow button[aria-current=step] {background:#fff; color:#087f82; border-color:#cde4e4; box-shadow:0 2px 6px #17374704}
+#surface-lab-bilingual .tablebox {border:1px solid var(--line); border-radius:9px}
+#surface-lab-bilingual th {background:#f5f8fa; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase}
+#surface-lab-bilingual td,#surface-lab-bilingual th {padding:12px 13px}
+#surface-lab-bilingual td {font-size:12px}
+#surface-lab-bilingual tbody tr:last-child td {border-bottom:0}
+#surface-lab-bilingual tbody tr:hover {background:#f7fbfc}
+#surface-lab-bilingual pre {background:#142d3b; color:#d8e9ef; border-radius:10px; padding:19px; font-size:11px; line-height:1.85}
+#surface-lab-bilingual .empty {background:#f6f9fb; border:1px dashed #cbdce5; border-radius:10px; padding:30px 18px; font-size:12px}
+#surface-lab-bilingual .structure-stage {height:390px; border-radius:12px; border-color:#dbe6ed; background:#f4f8fb}
+#surface-lab-bilingual .structure-empty {font-size:13px; color:#6c8492}
+#surface-lab-bilingual .structure-empty::before {content:&#x27;◇&#x27;; font-size:50px; font-weight:200; color:#b7d4d8; margin-right:18px}
+#surface-lab-bilingual .check {font-weight:400; line-height:1.7; gap:5px}
+#surface-lab-bilingual .statrow b {font-weight:700; letter-spacing:-.7px; font-size:25px}
+#surface-lab-bilingual [data-rp-storage] {color:#087f82; font-weight:600}
+#surface-lab-bilingual fieldset {border-radius:9px; background:#fbfdfe}
+#surface-lab-bilingual #sl-message:empty {display:none}
+#surface-lab-bilingual .paper-search-actions {margin-bottom:17px; gap:10px}
+#surface-lab-bilingual [data-action=find-papers],#surface-lab-bilingual [data-action=related-papers] {color:#087f82; border-color:#b7d9d6; background:#f2faf8}
+@media(min-width:1350px) {#surface-lab-bilingual main{padding:40px}#surface-lab-bilingual .split{gap:28px}}
+@media(max-width:1050px) {#surface-lab-bilingual .shell{grid-template-columns:190px minmax(0,1fr)}#surface-lab-bilingual main{padding:25px}#surface-lab-bilingual h1{font-size:27px}}
+@media(max-width:820px) {
+  #surface-lab-bilingual{border-radius:12px}
+  #surface-lab-bilingual .shell{grid-template-columns:1fr}
+  #surface-lab-bilingual .split{grid-template-columns:1fr}
+  #surface-lab-bilingual .top{padding:18px 21px;min-height:74px;gap:13px}
+  #surface-lab-bilingual .top&gt;.muted{font-size:11px}
+  #surface-lab-bilingual aside{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:10px 14px;scrollbar-width:thin}
+  #surface-lab-bilingual .nav{width:auto;flex:0 0 auto;white-space:nowrap;margin:0;min-height:40px;padding:10px 12px;font-size:11px}
+  #surface-lab-bilingual .nav[aria-current=page]::before{display:none}
+  #surface-lab-bilingual .sidehead,#surface-lab-bilingual .sidefoot{display:none}
+  #surface-lab-bilingual main{padding:24px;min-height:0}
+}
+@media(max-width:520px) {
+  #surface-lab-bilingual .top{padding:17px;gap:10px}
+  #surface-lab-bilingual .brand{font-size:14px;gap:10px}
+  #surface-lab-bilingual .brand::before{width:19px;height:19px}
+  #surface-lab-bilingual .top&gt;.muted{display:none}
+  #surface-lab-bilingual .top&gt;.pill{font-size:9px;padding:5px 8px}
+  #surface-lab-bilingual main{padding:23px 16px}
+  #surface-lab-bilingual h1{font-size:25px;letter-spacing:-.7px}
+  #surface-lab-bilingual .headline&gt;.small{font-size:9px;letter-spacing:1.2px}
+  #surface-lab-bilingual .headline&gt;.muted{font-size:12px}
+  #surface-lab-bilingual .panel{padding:18px;border-radius:12px}
+  #surface-lab-bilingual .fields{grid-template-columns:1fr}
+  #surface-lab-bilingual .button{font-size:11px}
+  #surface-lab-bilingual .dbitem{padding:15px}
+  #surface-lab-bilingual .structure-stage{height:285px}
+  #surface-lab-bilingual .structure-empty::before{display:none}
+  #surface-lab-bilingual .flow{gap:2px}
+  #surface-lab-bilingual .flow button{padding:7px;font-size:10px}
+  #surface-lab-bilingual .paper-search-actions&gt;.small{display:none}
+}
+
+/* The standalone search and its embedded view use the same components. */
+body.literature-app {color-scheme:light; --ink:#152b3b; --muted:#607385; --bg:#f4f7fa; --edge:#e0e8ee; --accent:#087f82; --soft:#eaf7f5; font-family:Inter,&#x27;Segoe UI&#x27;,system-ui,sans-serif; font-size:14px; line-height:1.7}
+body.literature-app header {background:#122b39; padding:19px max(24px,calc((100vw - 1080px)/2)); border-bottom:1px solid #244251}
+body.literature-app header a {font-size:12px; font-weight:600; color:#d2e9ea}
+body.literature-app main {max-width:1080px; padding:35px 24px 50px}
+body.literature-app h1 {font-size:32px; letter-spacing:-1px; font-weight:730; margin-bottom:8px}
+body.literature-app h2 {letter-spacing:-.3px}
+body.literature-app .panel,body.literature-app .paper {border-radius:14px; border-color:var(--edge); box-shadow:0 3px 15px #15374604; padding:23px}
+body.literature-app .paper {margin:14px 0; transition:border-color .18s ease,box-shadow .18s ease}
+body.literature-app .paper:hover {border-color:#b7d7d5; box-shadow:0 5px 20px #15374609}
+body.literature-app .title {font-size:16px; font-weight:680; letter-spacing:-.25px; line-height:1.65; margin:8px 0}
+body.literature-app .meta {font-size:11px; line-height:1.8}
+body.literature-app .paper&gt;.meta:first-child {font-weight:600; color:#087f82; letter-spacing:.15px}
+body.literature-app input,body.literature-app select {padding:11px 13px; border:1px solid #d9e4eb; border-radius:8px; font-size:13px; background:#fbfdfe; min-height:44px}
+body.literature-app label {font-size:11px; color:#53697a; letter-spacing:.2px; font-weight:650}
+body.literature-app input:focus,body.literature-app select:focus {outline:none; border-color:#238e91; box-shadow:0 0 0 3px #09818415; background:#fff}
+body.literature-app button,body.literature-app .actions a {font-size:12px; font-weight:600; border-radius:8px; border-color:#d7e3e9; transition:background .16s ease, border-color .16s ease}
+body.literature-app button:hover,body.literature-app .actions a:hover {background:#f0f8f7; border-color:#a9cecb; text-decoration:none}
+body.literature-app button.primary {background:#087f82; border-color:#087f82; color:#fff; padding:12px 21px; box-shadow:0 4px 12px #087f821a}
+body.literature-app button.primary:hover {background:#066c70}
+body.literature-app button:focus-visible,body.literature-app a:focus-visible,body.literature-app summary:focus-visible {outline:3px solid #46b7b2; outline-offset:3px}
+body.literature-app .quick {gap:7px; padding-top:4px}
+body.literature-app .quick button {font-size:11px; padding:6px 10px; color:#536d79; background:#f6f9fa}
+body.literature-app .actions {gap:8px; margin-top:14px}
+body.literature-app .actions a,body.literature-app .actions button {font-size:11px; padding:7px 10px; min-height:32px}
+body.literature-app .actions button[data-bookmark] {margin-left:auto; color:#087f82; border-color:#bcdbd5; background:#f0f9f6}
+body.literature-app .tabs {gap:5px; padding:5px; background:#eaf0f4; border:1px solid #e0e8ee; border-radius:11px; margin-top:20px}
+body.literature-app .tabs button {border-color:transparent; background:transparent; color:#617785; padding:9px 15px; font-size:12px}
+body.literature-app .tabs button.active {background:#fff; color:#087f82; box-shadow:0 2px 5px #15374609; border-color:#e0e8ee}
+body.literature-app #count {margin-left:auto; padding:0 10px; font-variant-numeric:tabular-nums}
+body.literature-app #status {font-size:12px; margin:14px 2px 5px; color:#607385}
+body.literature-app .abstract {font-size:12px; line-height:1.85; background:#f5f9fb; border-radius:8px; padding:14px}
+body.literature-app details summary {font-size:12px; color:#4d6f7b; cursor:pointer}
+body.literature-app footer {padding:18px 0; font-size:11px; line-height:1.8; border-top:1px solid var(--edge); color:#748794}
+body.literature-app.embedded main {padding-top:4px}
+@media(max-width:620px) {
+  body.literature-app main{padding:22px 15px 35px}
+  body.literature-app .panel,body.literature-app .paper{padding:18px;border-radius:11px}
+  body.literature-app h1{font-size:27px}
+  body.literature-app .title{font-size:14px}
+  body.literature-app .controls{grid-template-columns:1fr}
+  body.literature-app .tabs button{padding:8px 10px;font-size:11px}
+  body.literature-app #count{font-size:10px;padding:0 3px}
+  body.literature-app .actions button[data-bookmark]{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce) {
+  #surface-lab-bilingual *,body.literature-app * {transition:none!important;scroll-behavior:auto!important}
+  #surface-lab-bilingual .button:hover,#surface-lab-bilingual .dbitem:hover {transform:none}
+}
+
+/* Shell and paper-search dialog. Scoped to avoid changing iframe contents. */
+html[data-visualize-standalone]:has(&gt;body.surface-host) {color-scheme:light; background:#edf2f6}
+html[data-visualize-standalone]&gt;body.surface-host {padding:20px; background:#edf2f6; max-width:1640px; margin:0 auto}
+#surface-utility-bar {display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 5px 15px; font:11px/1.5 &#x27;Segoe UI&#x27;,system-ui,sans-serif; color:#6a8290; letter-spacing:.2px}
+#surface-utility-bar a {color:#087f82; text-decoration:none; font-weight:650; padding:5px 0}
+#surface-utility-bar a:hover {text-decoration:underline}
+#paper-search-dialog {width:min(1140px,95vw); height:92vh; max-height:92vh; border:1px solid #d9e5ec; border-radius:17px; background:#f4f7fa; box-shadow:0 30px 100px #0a23354a; padding:0}
+#paper-search-dialog::backdrop {background:#0c263a9c; backdrop-filter:blur(5px)}
+#paper-search-dialog .paper-dialog-header {min-height:72px; padding:17px 24px; font-family:Inter,&#x27;Segoe UI&#x27;,system-ui,sans-serif; border-bottom-color:#e0e8ee}
+#paper-search-dialog h2 {font-size:17px; font-weight:700; letter-spacing:-.4px; color:#152b3b}
+#paper-search-dialog .paper-dialog-actions {gap:18px}
+#paper-search-dialog a {font-size:11px; font-weight:600; color:#087f82}
+#paper-search-dialog button {border-color:#d7e3e9; padding:8px 13px; border-radius:8px; font-size:12px; font-weight:600}
+#paper-search-dialog button:hover {background:#eef7f5; border-color:#a6ccca}
+#paper-search-dialog button:focus-visible {outline:3px solid #46b7b2; outline-offset:3px}
+#paper-search-dialog iframe {height:calc(100% - 73px); background:#f4f7fa}
+@media(max-width:620px) {
+  html[data-visualize-standalone]&gt;body.surface-host{padding:8px}
+  #surface-utility-bar{padding:2px 5px 10px;font-size:10px}
+  #surface-utility-bar&gt;span{font-size:9px;letter-spacing:.1px}
+  #paper-search-dialog{width:calc(100vw - 16px);max-width:calc(100vw - 16px);border-radius:12px;height:94vh;max-height:94vh}
+  #paper-search-dialog .paper-dialog-header{padding:13px;min-height:63px;gap:7px}
+  #paper-search-dialog h2{font-size:14px}
+  #paper-search-dialog .paper-dialog-actions{gap:9px}
+  #paper-search-dialog a{font-size:10px}
+  #paper-search-dialog button{padding:7px 10px;font-size:11px}
+  #paper-search-dialog iframe{height:calc(100% - 64px)}
+}
+
 &lt;/style&gt;
-&lt;header class=&quot;top&quot;&gt;&lt;span class=&quot;brand&quot;&gt;SURFACE / LAB&lt;/span&gt;&lt;span class=&quot;muted&quot;&gt;Diamond · N surface effect&lt;/span&gt;&lt;span class=&quot;pill&quot;&gt;대화형 목업 v3&lt;/span&gt;&lt;/header&gt;
+&lt;header class=&quot;top&quot;&gt;&lt;span class=&quot;brand&quot;&gt;SURFACE / LAB&lt;/span&gt;&lt;span class=&quot;muted&quot;&gt;Diamond · Nitrogen surface chemistry&lt;/span&gt;&lt;span class=&quot;pill&quot;&gt;Research preview&lt;/span&gt;&lt;/header&gt;
 &lt;div class=&quot;shell&quot;&gt;&lt;aside aria-label=&quot;계산 작업 메뉴&quot;&gt;&lt;div class=&quot;sidehead&quot;&gt;DATA → COMPUTATION&lt;/div&gt;&lt;button class=&quot;nav&quot; data-go=&quot;db&quot;&gt;&lt;i data-lucide=&quot;database&quot;&gt;&lt;/i&gt;문헌 · 데이터 DB&lt;/button&gt;&lt;button class=&quot;nav&quot; data-go=&quot;define&quot;&gt;&lt;i data-lucide=&quot;scan-line&quot;&gt;&lt;/i&gt;문제 정의 · 조건&lt;/button&gt;&lt;button class=&quot;nav&quot; data-go=&quot;inputs&quot;&gt;&lt;i data-lucide=&quot;file-code&quot;&gt;&lt;/i&gt;입력 파일 생성&lt;/button&gt;&lt;button class=&quot;nav&quot; data-go=&quot;cluster&quot;&gt;&lt;i data-lucide=&quot;server&quot;&gt;&lt;/i&gt;Cluster 실행&lt;/button&gt;&lt;button class=&quot;nav&quot; data-go=&quot;results&quot;&gt;&lt;i data-lucide=&quot;chart-line&quot;&gt;&lt;/i&gt;해석 결과&lt;/button&gt;&lt;button class=&quot;nav&quot; data-go=&quot;post&quot;&gt;&lt;i data-lucide=&quot;workflow&quot;&gt;&lt;/i&gt;Kinetics · COMSOL&lt;/button&gt;&lt;div class=&quot;sidefoot&quot;&gt;연구 데이터 · 초기 조사본&lt;br&gt;2026.11.16&lt;br&gt;&lt;br&gt;Cluster 미연결&lt;br&gt;실행·결과는 시연 데이터&lt;/div&gt;&lt;/aside&gt;&lt;main&gt;&lt;div id=&quot;sl-content&quot;&gt;&lt;/div&gt;&lt;div id=&quot;sl-message&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;/main&gt;&lt;/div&gt;
 &lt;script&gt;
 /* 3Dmol.js integration. Coordinates stay in memory in this browser tab. */
@@ -2430,8 +2900,8 @@ function go(p,text,primary=false){return `&lt;button class=&quot;button ${primar
 function select(key,label,options){return `&lt;label&gt;${label}&lt;select data-key=&quot;${key}&quot;&gt;${options.map(x=&gt;{const val=Array.isArray(x)?x[0]:x,name=Array.isArray(x)?x[1]:x;return `&lt;option value=&quot;${esc(val)}&quot; ${String(state[key])===String(val)?&#x27;selected&#x27;:&#x27;&#x27;}&gt;${esc(name)}&lt;/option&gt;`;}).join(&#x27;&#x27;)}&lt;/select&gt;&lt;/label&gt;`;}
 function input(key,label,type=&#x27;text&#x27;,extra=&#x27;&#x27;){return `&lt;label&gt;${label}&lt;input data-key=&quot;${key}&quot; type=&quot;${type}&quot; value=&quot;${esc(state[key])}&quot; ${extra}&gt;&lt;/label&gt;`;}
 function flow(){return `&lt;div class=&quot;flow&quot;&gt;${[[&#x27;db&#x27;,&#x27;DB&#x27;],[&#x27;define&#x27;,&#x27;문제·조건&#x27;],[&#x27;inputs&#x27;,&#x27;입력 생성&#x27;],[&#x27;cluster&#x27;,&#x27;Cluster&#x27;],[&#x27;results&#x27;,&#x27;해석 결과&#x27;],[&#x27;post&#x27;,&#x27;후처리·연계&#x27;]].map((x,i)=&gt;`${i?&#x27;→&#x27;:&#x27;&#x27;}&lt;button data-go=&quot;${x[0]}&quot; aria-current=&quot;${state.page===x[0]?&#x27;step&#x27;:&#x27;false&#x27;}&quot;&gt;${x[1]}&lt;/button&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;`;}
-function db(){const item=sources.find(x=&gt;x.id===state.selected)||sources[0],list=sources.filter(x=&gt;(state.filter===&#x27;전체&#x27;||x.kind===state.filter)&amp;&amp;(x.title+x.finding+x.id+x.authors).toLowerCase().includes(state.query.toLowerCase()));return heading(&#x27;DATA LIBRARY&#x27;,&#x27;문헌 · 연구 데이터&#x27;,&#x27;실제 출처를 조사한 초기 목록 · 정량 반응 장벽은 원문 대조 후 등록&#x27;)+`&lt;div class=&quot;row between&quot; style=&quot;margin-bottom:13px&quot;&gt;&lt;span class=&quot;small&quot;&gt;문헌·문서 ${sources.length}건 / 반응 후보 ${reactions.length}건 · 신규 계산 결과 0건&lt;/span&gt;&lt;button class=&quot;button&quot; data-action=&quot;exportdb&quot;&gt;초기 DB JSON 내려받기&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;split&quot;&gt;&lt;section&gt;&lt;div class=&quot;fields&quot;&gt;&lt;label&gt;문헌 검색&lt;input id=&quot;sl-search&quot; value=&quot;${esc(state.query)}&quot; placeholder=&quot;N, CH₂, AMUSE 등&quot;&gt;&lt;/label&gt;${select(&#x27;filter&#x27;,&#x27;자료 유형&#x27;,[&#x27;전체&#x27;,...new Set(sources.map(x=&gt;x.kind))])}&lt;/div&gt;&lt;div class=&quot;row&quot; style=&quot;margin-bottom:12px&quot;&gt;&lt;button class=&quot;button&quot; data-action=&quot;find-papers&quot;&gt;Find papers online&lt;/button&gt;&lt;span class=&quot;small&quot;&gt;Search the web using these keywords&lt;/span&gt;&lt;/div&gt;${list.map(x=&gt;`&lt;button class=&quot;dbitem ${x.id===item.id?&#x27;selected&#x27;:&#x27;&#x27;}&quot; data-source=&quot;${x.id}&quot;&gt;&lt;span class=&quot;small&quot;&gt;${x.id} · ${esc(x.kind)} · ${x.year}&lt;/span&gt;&lt;strong&gt;${esc(x.title)}&lt;/strong&gt;&lt;span class=&quot;small&quot;&gt;${esc(x.authors)}&lt;/span&gt;&lt;/button&gt;`).join(&#x27;&#x27;)||&#x27;&lt;div class=&quot;empty&quot;&gt;일치하는 자료가 없습니다.&lt;/div&gt;&#x27;}&lt;/section&gt;&lt;section class=&quot;panel&quot;&gt;&lt;div class=&quot;row between&quot;&gt;&lt;span class=&quot;pill&quot;&gt;${esc(item.status)}&lt;/span&gt;&lt;span class=&quot;small&quot;&gt;${item.id}&lt;/span&gt;&lt;/div&gt;&lt;h2 style=&quot;margin-top:14px&quot;&gt;${esc(item.title)}&lt;/h2&gt;&lt;div class=&quot;record&quot;&gt;${esc(item.finding)}&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;&lt;h3&gt;우리 연구에 필요한 항목&lt;/h3&gt;&lt;p class=&quot;muted&quot;&gt;${esc(item.need)}&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;&lt;h3&gt;근거 위치&lt;/h3&gt;&lt;p class=&quot;small&quot;&gt;${esc(item.locator)}&lt;/p&gt;&lt;div class=&quot;row&quot;&gt;&lt;a href=&quot;${item.url}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;원 출처 ↗&lt;/a&gt;&lt;a href=&quot;${item.open}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;공개 자료·코드 ↗&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;&lt;h3&gt;수치 데이터&lt;/h3&gt;&lt;p&gt;ΔE‡ / ΔG‡: &lt;b&gt;미등록&lt;/b&gt;&lt;/p&gt;&lt;p class=&quot;small&quot;&gt;미확인 값은 null로 유지 · 계산 입력에 자동 대입하지 않음&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;notice&quot;&gt;${esc(item.caution)}&lt;/div&gt;&lt;button class=&quot;button primary&quot; data-action=&quot;use-source&quot;&gt;이 자료를 문제 정의에 연결&lt;/button&gt;&lt;/section&gt;&lt;/div&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;초기 반응 데이터 구조&lt;/h2&gt;&lt;div class=&quot;tablebox&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;반응&lt;/th&gt;&lt;th&gt;목적&lt;/th&gt;&lt;th&gt;근거&lt;/th&gt;&lt;th&gt;추가 수집 항목&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;${reactions.map(r=&gt;`&lt;tr&gt;&lt;td&gt;${r[0]} · ${r[1]}&lt;/td&gt;&lt;td&gt;${r[2]}&lt;/td&gt;&lt;td&gt;${r[3]}&lt;/td&gt;&lt;td&gt;${r[4]}&lt;/td&gt;&lt;/tr&gt;`).join(&#x27;&#x27;)}&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;p class=&quot;small&quot; style=&quot;margin-top:12px&quot;&gt;공통 필드: 표면·N 위치·피복률·반응물/생성물/TS·장벽 종류·단위·계산 방법·보정·원문 위치·검토 상태&lt;/p&gt;&lt;/section&gt;`;}
-function define(){return heading(&#x27;PROBLEM DEFINITION&#x27;,&#x27;문제 정의 · 계산 조건&#x27;,&#x27;표면 메커니즘 가설을 명시하고 VASP / QE에 전달할 공통 조건을 설정합니다.&#x27;)+flow()+&#x27;&lt;div id=&quot;sl-structure-host&quot;&gt;&lt;/div&gt;&#x27;+`&lt;div class=&quot;split&quot;&gt;&lt;div&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;연구 질문과 구조&lt;/h2&gt;${input(&#x27;problem&#x27;,&#x27;문제 정의&#x27;)}&lt;div class=&quot;fields&quot;&gt;${select(&#x27;task&#x27;,&#x27;계산 종류&#x27;,[[&#x27;relax&#x27;,&#x27;표면 구조 최적화&#x27;],[&#x27;scf&#x27;,&#x27;단일점 에너지&#x27;],[&#x27;neb&#x27;,&#x27;반응 경로 · NEB&#x27;]])}${select(&#x27;engine&#x27;,&#x27;계산 엔진&#x27;,[&#x27;VASP&#x27;,&#x27;Quantum ESPRESSO&#x27;])}&lt;/div&gt;&lt;label&gt;비교할 구조&lt;p class=&quot;small&quot; data-user-content&gt;${esc(state.structure.startsWith(&#x27;H-terminated diamond (100)-2×1 ·&#x27;)?translateText(state.structure):state.structure.replace(/ · 검증 전$/,translateText(&#x27; · 검증 전&#x27;)))}&lt;/p&gt;&lt;/label&gt;&lt;div class=&quot;fields&quot;&gt;${select(&#x27;nsite&#x27;,&#x27;질소 위치&#x27;,[&#x27;표면 매입 N&#x27;,&#x27;표면 아래 치환 N&#x27;,&#x27;흡착 N/NHₓ&#x27;,&#x27;N-free&#x27;])}${input(&#x27;vacuum&#x27;,&#x27;진공층 (Å)&#x27;,&#x27;number&#x27;,&#x27;min=&quot;5&quot;&#x27;)}${input(&#x27;layers&#x27;,&#x27;Slab 층수&#x27;,&#x27;number&#x27;,&#x27;min=&quot;2&quot;&#x27;)}${input(&#x27;base&#x27;,&#x27;고정할 하부 층수&#x27;,&#x27;number&#x27;,&#x27;min=&quot;0&quot;&#x27;)}&lt;/div&gt;&lt;p class=&quot;small&quot;&gt;N-free / N-containing 쌍 비교 계획&lt;/p&gt;${state.task===&#x27;neb&#x27;?&#x27;&lt;div class=&quot;notice&quot;&gt;NEB: 최적화된 초기·최종 구조, 동일한 원자 순서·셀, 이미지 수, 경로 보간·TS 검증이 추가로 필요합니다.&lt;/div&gt;&#x27;:&#x27;&#x27;}&lt;/section&gt;&lt;/div&gt;&lt;div&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;전자구조 · 수렴 조건&lt;/h2&gt;&lt;div class=&quot;fields&quot;&gt;${select(&#x27;xc&#x27;,&#x27;교환·상관 함수&#x27;,[&#x27;PBE&#x27;,&#x27;HSE06&#x27;])}${select(&#x27;spin&#x27;,&#x27;Spin 채널&#x27;,[[&#x27;1&#x27;,&#x27;비편극&#x27;],[&#x27;2&#x27;,&#x27;Spin-polarized&#x27;]])}${input(&#x27;charge&#x27;,&#x27;셀 총전하 (e)&#x27;,&#x27;number&#x27;)}${input(&#x27;k&#x27;,&#x27;k-point grid&#x27;)}${input(&#x27;cutoff&#x27;,state.engine===&#x27;VASP&#x27;?&#x27;ENCUT (eV)&#x27;:&#x27;ecutwfc (Ry)&#x27;,&#x27;number&#x27;,&#x27;min=&quot;1&quot;&#x27;)}${state.engine===&#x27;Quantum ESPRESSO&#x27;?input(&#x27;rho&#x27;,&#x27;ecutrho (Ry)&#x27;,&#x27;number&#x27;,&#x27;min=&quot;1&quot;&#x27;):&#x27;&#x27;}${input(&#x27;scf&#x27;,state.engine===&#x27;VASP&#x27;?&#x27;EDIFF (eV)&#x27;:&#x27;conv_thr (Ry)&#x27;)}${input(&#x27;force&#x27;,&#x27;힘 수렴 기준 (eV/Å)&#x27;,&#x27;number&#x27;,&#x27;step=&quot;0.005&quot; min=&quot;0.001&quot;&#x27;)}&lt;/div&gt;&lt;div class=&quot;notice&quot;&gt;표시값은 입력 UI 예시입니다. 문헌 재현값이나 수렴이 검증된 권장값이 아닙니다.&lt;/div&gt;&lt;p class=&quot;small&quot;&gt;확장 입력: 원자별 초기 자화, N 피복률, dipole correction, smearing, 표면 전하 보정, pseudopotential 버전&lt;/p&gt;&lt;/section&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;연결된 근거&lt;/h2&gt;&lt;p&gt;${esc(state.selected)} · ${esc((sources.find(x=&gt;x.id===state.selected)||sources[0]).kind)}&lt;/p&gt;&lt;p class=&quot;small&quot;&gt;계산의 가정·조건은 결과와 함께 보존&lt;/p&gt;&lt;div class=&quot;row&quot;&gt;&lt;button class=&quot;button&quot; data-action=&quot;related-papers&quot;&gt;Find related papers&lt;/button&gt;${go(&#x27;plan&#x27;,&#x27;Advanced comparison planning&#x27;)}&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;row&quot;&gt;${go(&#x27;inputs&#x27;,&#x27;입력 파일 생성으로 →&#x27;,true)}${go(&#x27;db&#x27;,&#x27;문헌 확인&#x27;)}&lt;/div&gt;`;}
+function db(){const item=sources.find(x=&gt;x.id===state.selected)||sources[0],list=sources.filter(x=&gt;(state.filter===&#x27;전체&#x27;||x.kind===state.filter)&amp;&amp;(x.title+x.finding+x.id+x.authors).toLowerCase().includes(state.query.toLowerCase()));return heading(&#x27;DATA LIBRARY&#x27;,&#x27;문헌 · 연구 데이터&#x27;,&#x27;실제 출처를 조사한 초기 목록 · 정량 반응 장벽은 원문 대조 후 등록&#x27;)+`&lt;div class=&quot;row between&quot; style=&quot;margin-bottom:13px&quot;&gt;&lt;span class=&quot;small&quot;&gt;문헌·문서 ${sources.length}건 / 반응 후보 ${reactions.length}건 · 신규 계산 결과 0건&lt;/span&gt;&lt;button class=&quot;button&quot; data-action=&quot;exportdb&quot;&gt;초기 DB JSON 내려받기&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;split&quot;&gt;&lt;section&gt;&lt;div class=&quot;fields&quot;&gt;&lt;label&gt;문헌 검색&lt;input id=&quot;sl-search&quot; value=&quot;${esc(state.query)}&quot; placeholder=&quot;N, CH₂, AMUSE 등&quot;&gt;&lt;/label&gt;${select(&#x27;filter&#x27;,&#x27;자료 유형&#x27;,[&#x27;전체&#x27;,...new Set(sources.map(x=&gt;x.kind))])}&lt;/div&gt;&lt;div class=&quot;row paper-search-actions&quot;&gt;&lt;button class=&quot;button&quot; data-action=&quot;find-papers&quot;&gt;&lt;i data-lucide=&quot;search&quot;&gt;&lt;/i&gt;Find papers online&lt;/button&gt;&lt;span class=&quot;small&quot;&gt;Search the web using these keywords&lt;/span&gt;&lt;/div&gt;${list.map(x=&gt;`&lt;button class=&quot;dbitem ${x.id===item.id?&#x27;selected&#x27;:&#x27;&#x27;}&quot; data-source=&quot;${x.id}&quot;&gt;&lt;span class=&quot;small&quot;&gt;${x.id} · ${esc(x.kind)} · ${x.year}&lt;/span&gt;&lt;strong&gt;${esc(x.title)}&lt;/strong&gt;&lt;span class=&quot;small&quot;&gt;${esc(x.authors)}&lt;/span&gt;&lt;/button&gt;`).join(&#x27;&#x27;)||&#x27;&lt;div class=&quot;empty&quot;&gt;일치하는 자료가 없습니다.&lt;/div&gt;&#x27;}&lt;/section&gt;&lt;section class=&quot;panel&quot;&gt;&lt;div class=&quot;row between&quot;&gt;&lt;span class=&quot;pill&quot;&gt;${esc(item.status)}&lt;/span&gt;&lt;span class=&quot;small&quot;&gt;${item.id}&lt;/span&gt;&lt;/div&gt;&lt;h2 style=&quot;margin-top:14px&quot;&gt;${esc(item.title)}&lt;/h2&gt;&lt;div class=&quot;record&quot;&gt;${esc(item.finding)}&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;&lt;h3&gt;우리 연구에 필요한 항목&lt;/h3&gt;&lt;p class=&quot;muted&quot;&gt;${esc(item.need)}&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;&lt;h3&gt;근거 위치&lt;/h3&gt;&lt;p class=&quot;small&quot;&gt;${esc(item.locator)}&lt;/p&gt;&lt;div class=&quot;row&quot;&gt;&lt;a href=&quot;${item.url}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;원 출처 ↗&lt;/a&gt;&lt;a href=&quot;${item.open}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;공개 자료·코드 ↗&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;&lt;h3&gt;수치 데이터&lt;/h3&gt;&lt;p&gt;ΔE‡ / ΔG‡: &lt;b&gt;미등록&lt;/b&gt;&lt;/p&gt;&lt;p class=&quot;small&quot;&gt;미확인 값은 null로 유지 · 계산 입력에 자동 대입하지 않음&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;notice&quot;&gt;${esc(item.caution)}&lt;/div&gt;&lt;button class=&quot;button primary&quot; data-action=&quot;use-source&quot;&gt;이 자료를 문제 정의에 연결&lt;/button&gt;&lt;/section&gt;&lt;/div&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;초기 반응 데이터 구조&lt;/h2&gt;&lt;div class=&quot;tablebox&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;반응&lt;/th&gt;&lt;th&gt;목적&lt;/th&gt;&lt;th&gt;근거&lt;/th&gt;&lt;th&gt;추가 수집 항목&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;${reactions.map(r=&gt;`&lt;tr&gt;&lt;td&gt;${r[0]} · ${r[1]}&lt;/td&gt;&lt;td&gt;${r[2]}&lt;/td&gt;&lt;td&gt;${r[3]}&lt;/td&gt;&lt;td&gt;${r[4]}&lt;/td&gt;&lt;/tr&gt;`).join(&#x27;&#x27;)}&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;p class=&quot;small&quot; style=&quot;margin-top:12px&quot;&gt;공통 필드: 표면·N 위치·피복률·반응물/생성물/TS·장벽 종류·단위·계산 방법·보정·원문 위치·검토 상태&lt;/p&gt;&lt;/section&gt;`;}
+function define(){return heading(&#x27;PROBLEM DEFINITION&#x27;,&#x27;문제 정의 · 계산 조건&#x27;,&#x27;표면 메커니즘 가설을 명시하고 VASP / QE에 전달할 공통 조건을 설정합니다.&#x27;)+flow()+&#x27;&lt;div id=&quot;sl-structure-host&quot;&gt;&lt;/div&gt;&#x27;+`&lt;div class=&quot;split&quot;&gt;&lt;div&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;연구 질문과 구조&lt;/h2&gt;${input(&#x27;problem&#x27;,&#x27;문제 정의&#x27;)}&lt;div class=&quot;fields&quot;&gt;${select(&#x27;task&#x27;,&#x27;계산 종류&#x27;,[[&#x27;relax&#x27;,&#x27;표면 구조 최적화&#x27;],[&#x27;scf&#x27;,&#x27;단일점 에너지&#x27;],[&#x27;neb&#x27;,&#x27;반응 경로 · NEB&#x27;]])}${select(&#x27;engine&#x27;,&#x27;계산 엔진&#x27;,[&#x27;VASP&#x27;,&#x27;Quantum ESPRESSO&#x27;])}&lt;/div&gt;&lt;label&gt;비교할 구조&lt;p class=&quot;small&quot; data-user-content&gt;${esc(state.structure.startsWith(&#x27;H-terminated diamond (100)-2×1 ·&#x27;)?translateText(state.structure):state.structure.replace(/ · 검증 전$/,translateText(&#x27; · 검증 전&#x27;)))}&lt;/p&gt;&lt;/label&gt;&lt;div class=&quot;fields&quot;&gt;${select(&#x27;nsite&#x27;,&#x27;질소 위치&#x27;,[&#x27;표면 매입 N&#x27;,&#x27;표면 아래 치환 N&#x27;,&#x27;흡착 N/NHₓ&#x27;,&#x27;N-free&#x27;])}${input(&#x27;vacuum&#x27;,&#x27;진공층 (Å)&#x27;,&#x27;number&#x27;,&#x27;min=&quot;5&quot;&#x27;)}${input(&#x27;layers&#x27;,&#x27;Slab 층수&#x27;,&#x27;number&#x27;,&#x27;min=&quot;2&quot;&#x27;)}${input(&#x27;base&#x27;,&#x27;고정할 하부 층수&#x27;,&#x27;number&#x27;,&#x27;min=&quot;0&quot;&#x27;)}&lt;/div&gt;&lt;p class=&quot;small&quot;&gt;N-free / N-containing 쌍 비교 계획&lt;/p&gt;${state.task===&#x27;neb&#x27;?&#x27;&lt;div class=&quot;notice&quot;&gt;NEB: 최적화된 초기·최종 구조, 동일한 원자 순서·셀, 이미지 수, 경로 보간·TS 검증이 추가로 필요합니다.&lt;/div&gt;&#x27;:&#x27;&#x27;}&lt;/section&gt;&lt;/div&gt;&lt;div&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;전자구조 · 수렴 조건&lt;/h2&gt;&lt;div class=&quot;fields&quot;&gt;${select(&#x27;xc&#x27;,&#x27;교환·상관 함수&#x27;,[&#x27;PBE&#x27;,&#x27;HSE06&#x27;])}${select(&#x27;spin&#x27;,&#x27;Spin 채널&#x27;,[[&#x27;1&#x27;,&#x27;비편극&#x27;],[&#x27;2&#x27;,&#x27;Spin-polarized&#x27;]])}${input(&#x27;charge&#x27;,&#x27;셀 총전하 (e)&#x27;,&#x27;number&#x27;)}${input(&#x27;k&#x27;,&#x27;k-point grid&#x27;)}${input(&#x27;cutoff&#x27;,state.engine===&#x27;VASP&#x27;?&#x27;ENCUT (eV)&#x27;:&#x27;ecutwfc (Ry)&#x27;,&#x27;number&#x27;,&#x27;min=&quot;1&quot;&#x27;)}${state.engine===&#x27;Quantum ESPRESSO&#x27;?input(&#x27;rho&#x27;,&#x27;ecutrho (Ry)&#x27;,&#x27;number&#x27;,&#x27;min=&quot;1&quot;&#x27;):&#x27;&#x27;}${input(&#x27;scf&#x27;,state.engine===&#x27;VASP&#x27;?&#x27;EDIFF (eV)&#x27;:&#x27;conv_thr (Ry)&#x27;)}${input(&#x27;force&#x27;,&#x27;힘 수렴 기준 (eV/Å)&#x27;,&#x27;number&#x27;,&#x27;step=&quot;0.005&quot; min=&quot;0.001&quot;&#x27;)}&lt;/div&gt;&lt;div class=&quot;notice&quot;&gt;표시값은 입력 UI 예시입니다. 문헌 재현값이나 수렴이 검증된 권장값이 아닙니다.&lt;/div&gt;&lt;p class=&quot;small&quot;&gt;확장 입력: 원자별 초기 자화, N 피복률, dipole correction, smearing, 표면 전하 보정, pseudopotential 버전&lt;/p&gt;&lt;/section&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;연결된 근거&lt;/h2&gt;&lt;p&gt;${esc(state.selected)} · ${esc((sources.find(x=&gt;x.id===state.selected)||sources[0]).kind)}&lt;/p&gt;&lt;p class=&quot;small&quot;&gt;계산의 가정·조건은 결과와 함께 보존&lt;/p&gt;&lt;div class=&quot;row&quot;&gt;&lt;button class=&quot;button&quot; data-action=&quot;related-papers&quot;&gt;&lt;i data-lucide=&quot;search&quot;&gt;&lt;/i&gt;Find related papers&lt;/button&gt;${go(&#x27;plan&#x27;,&#x27;Advanced comparison planning&#x27;)}&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;row&quot;&gt;${go(&#x27;inputs&#x27;,&#x27;입력 파일 생성으로 →&#x27;,true)}${go(&#x27;db&#x27;,&#x27;문헌 확인&#x27;)}&lt;/div&gt;`;}
 function makeFiles(){const v=state.engine===&#x27;VASP&#x27;,relax=state.task===&#x27;relax&#x27;,neb=state.task===&#x27;neb&#x27;,force=Number(state.force),common={};if(v){common.INCAR=[&#x27;# DRAFT ONLY: structure and POTCAR not yet registered&#x27;,`SYSTEM = Diamond_N_surface_${state.task}`,`ENCUT = ${state.cutoff}`,`EDIFF = ${state.scf}`,`EDIFFG = -${force}`,`ISPIN = ${state.spin}`,&#x27;# NELECT: derive from POTCAR valence sum and requested charge&#x27;,`# requested charge = ${state.charge} e`,`GGA = PE`,...(state.xc===&#x27;HSE06&#x27;?[&#x27;LHFCALC = .TRUE.&#x27;,&#x27;HFSCREEN = 0.2&#x27;,&#x27;AEXX = 0.25&#x27;]:[]),`IBRION = ${neb?3:relax?2:-1}`,`NSW = ${relax||neb?200:0}`,&#x27;ISIF = 2&#x27;,...(neb?[&#x27;IMAGES = 5&#x27;,&#x27;SPRING = -5&#x27;,&#x27;POTIM = 0&#x27;,&#x27;# NEB optimizer and image folders require validation&#x27;]:[]),&#x27;# MAGMOM / smearing / dipole treatment: review before submission&#x27;].join(nl);common.POSCAR=[&#x27;# STRUCTURE REQUIRED&#x27;,&#x27;# Upload and validate the reconstructed, H-terminated slab.&#x27;,&#x27;# No coordinates are fabricated by this mockup.&#x27;].join(nl);common.KPOINTS=[&#x27;Gamma mesh&#x27;,&#x27;0&#x27;,&#x27;Gamma&#x27;,state.k,&#x27;0 0 0&#x27;].join(nl);common[&#x27;POTCAR.manifest&#x27;]=[&#x27;status: required-from-local-licensed-library&#x27;,&#x27;species_order: follow-validated-POSCAR&#x27;,&#x27;functional: &#x27;+state.xc,&#x27;checksum: pending&#x27;,&#x27;POTCAR itself is not included.&#x27;].join(nl);}else{common[neb?&#x27;neb.in.draft&#x27;:&#x27;pw.in.draft&#x27;]=[...(neb?[&#x27;# NEB DRAFT: endpoint coordinates and image blocks required&#x27;,&#x27;BEGIN&#x27;,&#x27;BEGIN_PATH_INPUT&#x27;,&#x27;&amp;PATH&#x27;,&quot; string_method=&#x27;neb&#x27;,&quot;,&#x27; num_of_images=7,&#x27;,&#x27; nstep_path=100,&#x27;,&#x27;/&#x27;,&#x27;END_PATH_INPUT&#x27;,&#x27;BEGIN_ENGINE_INPUT&#x27;]:[]),&#x27;! DRAFT ONLY: missing cell, species and coordinates&#x27;,&#x27;&amp;CONTROL&#x27;,` calculation=&#x27;${relax?&#x27;relax&#x27;:&#x27;scf&#x27;}&#x27;,`,` prefix=&#x27;diamond_n&#x27;, pseudo_dir=&#x27;./pseudo&#x27;, outdir=&#x27;./tmp&#x27;,`,` tprnfor=.true., forc_conv_thr=${(force/25.711043).toExponential(6)},`,&#x27;/&#x27;,&#x27;&amp;SYSTEM&#x27;,` ibrav=0, ecutwfc=${state.cutoff}, ecutrho=${state.rho},`,` nspin=${state.spin}, tot_charge=${state.charge},`,` input_dft=&#x27;${state.xc===&#x27;HSE06&#x27;?&#x27;HSE&#x27;:&#x27;PBE&#x27;}&#x27;,`,&#x27; ! nat, ntyp, occupations, magnetization: assign after structure validation&#x27;,&#x27;/&#x27;,&#x27;&amp;ELECTRONS&#x27;,` conv_thr=${state.scf},`,&#x27;/&#x27;,...(relax?[&quot;&amp;IONS&quot;, &quot; ion_dynamics=&#x27;bfgs&#x27;,&quot;,&#x27;/&#x27;]:[]),&#x27;! ATOMIC_SPECIES / CELL_PARAMETERS / ATOMIC_POSITIONS required&#x27;,&#x27;K_POINTS automatic&#x27;,state.k+&#x27; 0 0 0&#x27;,...(neb?[&#x27;END_ENGINE_INPUT&#x27;,&#x27;BEGIN_POSITIONS&#x27;,&#x27;! FIRST_IMAGE / LAST_IMAGE: add validated endpoint coordinates&#x27;,&#x27;END_POSITIONS&#x27;,&#x27;END&#x27;]:[])].join(nl);common[&#x27;UPF.manifest&#x27;]=[&#x27;status: missing&#x27;,&#x27;C: select validated UPF&#x27;,&#x27;H: select validated UPF&#x27;,&#x27;N: select validated UPF&#x27;,&#x27;record functional, source, version, checksum&#x27;].join(nl);}common[state.scheduler===&#x27;PBS&#x27;?&#x27;job.pbs.draft&#x27;:&#x27;job.slurm.draft&#x27;]=[&#x27;#!/bin/bash&#x27;,`#SBATCH --job-name=diamond-n`, `#SBATCH --nodes=${state.nodes}`,`#SBATCH --ntasks=${state.ranks}`,`#SBATCH --time=${state.wall}`,&#x27;set -euo pipefail&#x27;,&#x27;# DRAFT: configure partition, module, executable and scratch path&#x27;,&#x27;# &#x27;+(v?&#x27;srun vasp_std &gt; vasp.log&#x27;:neb?&#x27;srun neb.x -in neb.in &gt; neb.out&#x27;:&#x27;srun pw.x -in pw.in &gt; pw.out&#x27;)].join(nl);if(state.scheduler===&#x27;PBS&#x27;){common[&#x27;job.pbs.draft&#x27;]=[&#x27;#!/bin/bash&#x27;,&#x27;#PBS -N diamond-n&#x27;,`#PBS -l select=${state.nodes}:ncpus=${Math.ceil(state.ranks/state.nodes)}`,`#PBS -l walltime=${state.wall}`,&#x27;set -euo pipefail&#x27;,&#x27;# DRAFT: configure queue, working directory, modules and MPI launch command&#x27;].join(nl);}common[&#x27;run-manifest.json&#x27;]=JSON.stringify({mode:&#x27;draft-not-runnable&#x27;,engine:state.engine,task:state.task,problem:state.problem,source_id:state.selected,research_context:state.researchContext||null,xc:state.xc,charge_e:state.charge,structure_status:&#x27;not-validated&#x27;,cutoff:{value:Number(state.cutoff),unit:v?&#x27;eV&#x27;:&#x27;Ry&#x27;},kpoints:state.k,force_eV_A:force,blocking:[&#x27;validated structure&#x27;,&#x27;pseudopotential mapping&#x27;,&#x27;convergence protocol&#x27;,&#x27;cluster profile&#x27;]},null,2);return common;}
 function inputs(){if(state.generated)files=makeFiles();const names=Object.keys(files),file=names.includes(state.file)?state.file:names[0];return heading(&#x27;INPUT BUILDER&#x27;,&#x27;VASP · Quantum ESPRESSO 입력 파일&#x27;,&#x27;설정값을 반영한 입력 초안과 실행 스크립트를 미리 봅니다.&#x27;)+flow()+`&lt;div class=&quot;row between&quot; style=&quot;margin-bottom:14px&quot;&gt;&lt;span class=&quot;pill&quot;&gt;${state.engine} · ${state.xc} · ${state.task}&lt;/span&gt;&lt;button class=&quot;button primary&quot; data-action=&quot;generate&quot;&gt;입력 초안 생성 / 갱신&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;notice&quot;&gt;구조·pseudopotential·수렴 검증이 없어 실행 가능한 최종 입력이 아닙니다. POTCAR/UPF는 실제 라이브러리 연결 후 준비합니다.&lt;/div&gt;&lt;div class=&quot;split&quot;&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;입력 파일 미리보기&lt;/h2&gt;${state.generated?`&lt;div class=&quot;tabs&quot;&gt;${names.map(n=&gt;`&lt;button class=&quot;button&quot; data-file=&quot;${n}&quot; aria-pressed=&quot;${n===file}&quot;&gt;${n}&lt;/button&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;pre&gt;${esc(files[file])}&lt;/pre&gt;&lt;button class=&quot;button&quot; data-action=&quot;download-input&quot;&gt;선택 파일 내려받기&lt;/button&gt;`:&#x27;&lt;div class=&quot;empty&quot;&gt;위의 입력 초안 생성 버튼을 눌러보세요.&lt;/div&gt;&#x27;}&lt;/section&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;실행 전 검사&lt;/h2&gt;&lt;div class=&quot;item&quot;&gt;✓ 문제 정의·계산 조건 기록&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;○ 원자 구조·셀·고정 원자 검증&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;○ POTCAR / UPF·함수 일치&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;○ cutoff·k-grid·slab 수렴&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;○ Spin·전하·dipole 조건&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;○ Cluster 실행 환경·자원 매핑&lt;/div&gt;&lt;div class=&quot;item&quot;&gt;&lt;p class=&quot;small&quot;&gt;VASP eV ↔ QE Ry, force eV/Å ↔ Ry/Bohr 단위를 구분합니다. 엔진 전환은 동일 정확도를 보장하지 않습니다.&lt;/p&gt;&lt;/div&gt;${go(&#x27;define&#x27;,&#x27;조건 수정&#x27;)}${go(&#x27;cluster&#x27;,&#x27;Cluster 실행 시연 →&#x27;)}&lt;/section&gt;&lt;/div&gt;`;}
 function cluster(){const stages=[&#x27;패키지 준비&#x27;,&#x27;업로드&#x27;,&#x27;대기열&#x27;,&#x27;실행&#x27;,&#x27;결과 회수&#x27;];return heading(&#x27;CLUSTER RUNNER&#x27;,&#x27;업로드 · 제출 · 모니터링&#x27;,&#x27;서버 연결 프로필과 계산 패키지를 이용해 작업을 실행하는 흐름입니다.&#x27;)+flow()+`&lt;div class=&quot;banner&quot;&gt;시연 전용 · SSH 접속, 파일 전송, 작업 제출은 발생하지 않습니다.&lt;/div&gt;&lt;div class=&quot;split&quot;&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;서버 · 실행 조건&lt;/h2&gt;&lt;label&gt;Cluster 프로필&lt;select&gt;&lt;option&gt;그룹 Cluster · 연결 설정 필요&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;div class=&quot;fields&quot;&gt;${select(&#x27;scheduler&#x27;,&#x27;스케줄러&#x27;,[&#x27;Slurm&#x27;,&#x27;PBS&#x27;])}${input(&#x27;nodes&#x27;,&#x27;Nodes&#x27;,&#x27;number&#x27;,&#x27;min=&quot;1&quot;&#x27;)}${input(&#x27;ranks&#x27;,&#x27;전체 MPI ranks&#x27;,&#x27;number&#x27;,&#x27;min=&quot;1&quot;&#x27;)}${input(&#x27;wall&#x27;,&#x27;Walltime (HH:MM:SS)&#x27;)}&lt;/div&gt;&lt;label&gt;원격 작업 경로&lt;input value=&quot;/scratch/&amp;lt;user&amp;gt;/diamond/&amp;lt;run-id&amp;gt;&quot; readonly&gt;&lt;/label&gt;&lt;p class=&quot;small&quot;&gt;실제 연결 시: 서버 주소·계정·인증 참조·partition/queue·모듈·실행 파일·보관 경로 설정&lt;/p&gt;&lt;div class=&quot;row&quot; style=&quot;margin-top:15px&quot;&gt;&lt;button class=&quot;button primary&quot; data-action=&quot;advance&quot; ${state.generated?&#x27;&#x27;:&#x27;disabled&#x27;}&gt;${state.stage===0?&#x27;업로드 시연 시작&#x27;:state.stage&lt;5?&#x27;다음 실행 단계 시연&#x27;:&#x27;새 시연 시작&#x27;}&lt;/button&gt;&lt;button class=&quot;button&quot; data-action=&quot;cancel&quot; ${state.stage&gt;0&amp;&amp;state.stage&lt;5?&#x27;&#x27;:&#x27;disabled&#x27;}&gt;시연 작업 취소&lt;/button&gt;&lt;/div&gt;${!state.generated?&#x27;&lt;p class=&quot;small&quot;&gt;입력 파일 화면에서 먼저 초안을 생성해 주세요.&lt;/p&gt;&#x27;:&#x27;&#x27;}&lt;/section&gt;&lt;section class=&quot;panel&quot;&gt;&lt;h2&gt;작업 상태 · DEMO-RUN-001&lt;/h2&gt;&lt;div class=&quot;state&quot;&gt;${stages.map((x,i)=&gt;`&lt;div class=&quot;${state.stage&gt;i?&#x27;done&#x27;:&#x27;&#x27;}&quot;&gt;${state.stage&gt;i?&#x27;✓ &#x27;:&#x27;&#x27;}${x}&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;pre&gt;${esc(state.stage===0?&#x27;No remote connection.&#x27;:[`[SIMULATION ONLY] ${state.engine} / ${state.scheduler}`,state.stage&gt;=1?&#x27;Draft package prepared; unresolved inputs bypassed for UI demo.&#x27;:&#x27;&#x27;,state.stage&gt;=2?&#x27;Mock upload acknowledged.&#x27;:&#x27;&#x27;,state.stage&gt;=3?&#x27;Mock scheduler ID: DEMO-001; queued.&#x27;:&#x27;&#x27;,state.stage&gt;=4?&#x27;Mock run started. No solver invoked.&#x27;:&#x27;&#x27;,state.stage&gt;=5?&#x27;Synthetic fixture loaded. Not a scientific result.&#x27;:&#x27;&#x27;].filter(Boolean).join(nl))}&lt;/pre&gt;&lt;p class=&quot;small&quot;&gt;실제 구현에서는 서버 job ID, 상태·로그, 전송 확인, 종료 코드, 결과 파일 검증을 기록합니다.&lt;/p&gt;${state.stage&gt;=5?go(&#x27;results&#x27;,&#x27;시연 결과 확인 →&#x27;,true):&#x27;&#x27;}&lt;/section&gt;&lt;/div&gt;`;}
