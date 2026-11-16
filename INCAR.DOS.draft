@@ -1,0 +1,24 @@
+# Static VASP DOS calculation; run after a converged SCF calculation.
+SYSTEM = diamond_surface_DOS_draft
+ISTART = 0
+ICHARG = 11
+LREAL = .FALSE.
+ENCUT = 600
+PREC = Accurate
+LWAVE = .FALSE.
+LCHARG = .FALSE.
+ISPIN = 2
+GGA = PE
+ISMEAR = -5
+SIGMA = 0.08
+EDIFF = 1E-7
+LORBIT = 11
+LMAXMIX = 2
+NEDOS = 3000
+NSW = 0
+SYMPREC = 1E-8
+
+# Place the converged SCF CHGCAR, matching POSCAR and POTCAR in this DOS directory.
+# Keep species order, functional, PAW datasets and spin setup consistent with SCF.
+# Choose a k-point mesh dense enough for a converged DOS; the slab relaxation mesh may be too coarse.
+# SIGMA is retained from the supplied template; ISMEAR = -5 uses the tetrahedron method.
