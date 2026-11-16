@@ -228,6 +228,20 @@
       const s=current();
       onUse?.({study:copy(s),configuration:copy(config),group:group?copy(group):null,plan:jobPlan(s,parser),issues:group?validateGroup(s,group,parser):['single-configuration-draft']});
     }
+    function updateField(el,redraw) {
+      const entity=el.dataset.rpEntity,key=el.dataset.rpField;if(!entity)return;
+      const s=current();
+      commit(()=>{
+        const target=entity==='study'?s:entity==='protocol'?s.protocol:entity==='config'?s.configurations.find(x=>x.id===el.dataset.rpId):s.groups.find(x=>x.id===el.dataset.rpId);
+        target[key]=el.type==='checkbox'?el.checked:el.value;
+        if(entity==='protocol') {
+          if(key==='engine'){target.cutoff='';target.pseudo='';target.convergence='';}
+          s.configurations.forEach(c=>c.optimized=false);s.groups.forEach(g=>g.mappingReviewed=false);
+        }
+        if(entity==='config'&&key!=='optimized'&&key!=='label'&&key!=='locator'&&key!=='assumptions') {target.optimized=false;s.groups.filter(g=>g.left===target.id||g.right===target.id).forEach(g=>g.mappingReviewed=false);}
+        if(entity==='group'&&['left','right','type'].includes(key))target.mappingReviewed=false;
+      },redraw);
+    }
     function bind() {
       host.addEventListener('click',event=>{
         const b=event.target.closest('button');if(!b)return;event.stopPropagation();
@@ -269,20 +283,13 @@
         }
         if(el.hasAttribute('data-rp-study')){commit(()=>{data.activeId=el.value;selected='';previewing='';});return;}
         if(el.dataset.rpSource){commit(()=>{s.sourceIds=el.checked?[...new Set([...s.sourceIds,el.dataset.rpSource])]:s.sourceIds.filter(x=>x!==el.dataset.rpSource);});return;}
-        const entity=el.dataset.rpEntity,key=el.dataset.rpField;if(!entity)return;
-        commit(()=>{
-          const target=entity==='study'?s:entity==='protocol'?s.protocol:entity==='config'?s.configurations.find(x=>x.id===el.dataset.rpId):s.groups.find(x=>x.id===el.dataset.rpId);
-          target[key]=el.type==='checkbox'?el.checked:el.value;
-          if(entity==='protocol') {
-            if(key==='engine'){target.cutoff='';target.pseudo='';target.convergence='';}
-            s.configurations.forEach(c=>c.optimized=false);s.groups.forEach(g=>g.mappingReviewed=false);
-          }
-          if(entity==='config'&&key!=='optimized'&&key!=='label'&&key!=='locator'&&key!=='assumptions') {target.optimized=false;s.groups.filter(g=>g.left===target.id||g.right===target.id).forEach(g=>g.mappingReviewed=false);}
-          if(entity==='group'&&['left','right','type'].includes(key))target.mappingReviewed=false;
-        },el.tagName==='SELECT'||el.type==='checkbox');
+        updateField(el,el.tagName==='SELECT'||el.type==='checkbox');
       });
       // Parent application has its own live-search handler.
-      host.addEventListener('input',event=>event.stopPropagation());
+      host.addEventListener('input',event=>{
+        event.stopPropagation();
+        if(event.target.dataset.rpEntity&&event.target.tagName!=='SELECT'&&event.target.type!=='checkbox')updateField(event.target,false);
+      });
     }
     return {
       mount(target){if(host!==target){host=target;bind();}render();},

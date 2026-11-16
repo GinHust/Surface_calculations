@@ -88,6 +88,13 @@ test('coordinate/protocol edits invalidate endpoint review and imported plans ap
   await h.events.change({stopPropagation(){},target:{dataset:{rpImport:''},files:[{size:json.length,text:async()=>json}]}});
   const result=ui.snapshot();assert.equal(result.studies.length,2);assert.notEqual(result.studies[0].configurations[0].id,result.studies[1].configurations[0].id);assert.equal(result.studies[1].groups[0].left,result.studies[1].configurations[0].id);
 });
+test('typing saves without waiting for blur and handoff uses the latest question',()=>{
+  const {s}=complete();const h=host();let handed;
+  const ui=planner.create({sources,parser:parse,initial:{version:1,locale:'vi',activeId:s.id,studies:[s]},onUse:value=>handed=value});ui.mount(h);
+  h.events.input({stopPropagation(){},target:{dataset:{rpEntity:'study',rpField:'question'},type:'textarea',tagName:'TEXTAREA',value:'New question while still focused'}});
+  assert.equal(ui.snapshot().studies[0].question,'New question while still focused');
+  click(h,{rpAction:'prepare',rpId:s.groups[0].id});assert.equal(handed.study.question,'New question while still focused');
+});
 test('application connects literature, planner groups and draft manifests without a real solver',()=>{
   const content=host(),message=host(),plannerHost=host(),root=host();
   root.querySelector=selector=>selector==='#sl-content'?content:selector==='#sl-message'?message:selector==='#sl-planner-host'&&content.innerHTML.includes('sl-planner-host')?plannerHost:null;
