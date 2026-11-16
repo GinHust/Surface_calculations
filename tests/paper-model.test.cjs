@@ -37,7 +37,7 @@ test('paper-to-planner export focuses on two models and a downloadable VASP draf
   const pair=model.generatePair(),study=model.buildStudy(pair,profile);
   assert.equal(study.configurations.length,2);assert.equal(study.configurations.filter(c=>c.attachment).length,2);assert.equal(study.groups.length,0);
   assert.equal(study.protocol.cutoff,'600');assert.equal(study.protocol.kpoints,'1 1 1');assert.equal(study.protocol.vacuum,'10');assert.equal(study.protocol.layers,'12');
-  assert(study.configurations[0].label.includes('Reference'));assert(study.configurations[1].label.includes('Nitrogen-promoted hypothesis'));
+  assert(study.configurations[0].label.includes('Reference system'));assert(study.configurations[1].label.includes('N-promoted system'));
   const raw={version:1,locale:'en',activeId:study.id,studies:[study]};const restored=planner.validateDocument(raw,sources.map(s=>s.id),viewer.prepareFile);assert.deepEqual(restored,raw);
   assert(study.configurations.filter(c=>c.attachment).every(c=>c.assumptions.includes('Construction values:')));
   const jobs=planner.jobPlan(study,viewer.prepareFile).jobs;assert.equal(jobs.length,4);assert(jobs.filter(j=>j.task==='relax').every(j=>j.status==='blocked'));
