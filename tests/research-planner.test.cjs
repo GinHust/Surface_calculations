@@ -54,7 +54,7 @@ test('calculation graph preserves geometry and energy dependencies and never cla
   s.configurations[0].attachment=null;assert.equal(planner.jobPlan(s,parse).jobs.at(-1).status,'blocked');
 });
 test('round-trip preserves coordinates and incomplete records; rejects malformed imports and size limits',()=>{
-  const {s,g}=complete();const raw={version:1,locale:'vi',activeId:s.id,studies:[s]};
+  const {s,g}=complete();const raw={version:1,locale:'en',activeId:s.id,studies:[s]};
   assert.deepEqual(planner.validateDocument(raw,known,parse),raw);
   g.right=g.left;assert.equal(planner.validateDocument(raw,known,parse).studies[0].groups[0].right,g.left);
   const bad=structuredClone(raw);bad.studies[0].configurations[0].attachment.text='bad';assert.throws(()=>planner.validateDocument(bad,known,parse));
@@ -106,7 +106,10 @@ test('application connects literature, planner groups and draft manifests withou
   let script=scripts.at(-1).replace(/render\(\);\r?\n\}\)\(\);/,'render();globalThis.testAPI={state,makeFiles};\n})();');
   new vm.Script(script).runInContext(context);
   click(root,{source:'L05'});click(root,{action:'use-source'});
-  assert.equal(context.testAPI.state.page,'plan');assert(plannerHost.innerHTML.includes('Thiết kế bài toán'));
+  assert.equal(context.testAPI.state.page,'define');
+  assert(content.innerHTML.includes('Advanced comparison planning'));
+  click(root,{go:'plan'});
+  assert.equal(context.testAPI.state.page,'plan');assert(plannerHost.innerHTML.includes('Research Planner'));
   click(plannerHost,{rpAction:'neb-template'});
   const data=context.testAPI.state.research,s=data.studies.find(s=>s.id===data.activeId);
   assert(s.sourceIds.includes('L05'));
@@ -114,6 +117,17 @@ test('application connects literature, planner groups and draft manifests withou
   assert.equal(context.testAPI.state.page,'define');assert.equal(context.testAPI.state.task,'neb');
   const manifest=JSON.parse(context.testAPI.makeFiles()['run-manifest.json']);
   assert.equal(manifest.research_context.studyId,s.id);assert.equal(manifest.research_context.endpoints.length,2);assert(manifest.research_context.planningIssues.includes('structure'));assert.equal(manifest.mode,'draft-not-runnable');
+});
+test('English-only labels override old locale preferences while preserving authored content',()=>{
+  const {s}=complete();s.question='User-authored research question';
+  const raw={version:1,locale:'vi',activeId:s.id,studies:[s]};
+  const h=host();const ui=planner.create({sources,parser:parse,initial:raw});ui.mount(h);
+  assert.equal(ui.snapshot().locale,'en');assert.equal(ui.snapshot().studies[0].question,s.question);
+  assert(!h.innerHTML.includes('data-rp-lang'));assert(h.innerHTML.includes('Research Planner'));
+  const app=fs.readFileSync(require.resolve('../src/app.html'),'utf8');
+  assert(!app.includes('class="nav" data-go="plan"'));assert(!app.includes('data-lang="ko"'));assert(!app.includes('data-lang="en"'));
+  const literature=fs.readFileSync(require.resolve('../src/literature-search.html'),'utf8');assert(!literature.includes('data-lang='));
+  assert(!/[가-힣]/.test(JSON.stringify(sources)));
 });
 test('build embeds planner and inventory once and retains enough storage for coordinate records',()=>{
   const app=fs.readFileSync(require.resolve('../src/app.html'),'utf8');assert.equal(app.split('__RESEARCH_PLANNER_JS__').length,2);

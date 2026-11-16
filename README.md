@@ -1,12 +1,12 @@
 # KICETIC-surface · Surface Compute Lab
 
-A bilingual Korean / English interface mockup for a small diamond-growth research group: literature data → problem definition → DFT input drafts → simulated cluster jobs → results → kinetics / COMSOL transfer.
+An English-language interface mockup for a small diamond-growth research group: literature data → problem definition → DFT input drafts → simulated cluster jobs → results → kinetics / COMSOL transfer.
 
 [한국어 안내](docs/SHARING.ko.md) · [Research survey and module notes](docs/research-and-modules.ko.md)
 
 ## Preview locally
 
-Open `site/index.html` in a current browser. A server, Python, and a DFT installation are not needed to view the prebuilt page. Internet access is needed for the exported viewer's external runtime assets. The language buttons preserve current settings and demo progress. Preferences are saved in this browser when storage is available; there is no shared backend.
+Open `site/index.html` in a current browser. A server, Python, and a DFT installation are not needed to view the prebuilt page. Internet access is needed for the exported viewer's external runtime assets. The interface uses English, including for previously saved language preferences. Preferences are saved in this browser when storage is available; there is no shared backend.
 
 ## Publish with GitHub Pages
 
@@ -30,8 +30,8 @@ If browser upload omits the hidden `.github` folder, use the simpler alternative
 
 ## What works
 
-- **Research Planner**: source-linked questions, multiple material configurations, provenance/assumptions, attached coordinate files, matched comparison groups, and dependency-aware calculation plans. Includes Vietnamese / English / Korean planner labels, adsorption/NEB planning templates, browser persistence and JSON import/export. See the [Vietnamese guide](docs/research-planner.vi.md).
-- Korean / English switching with shared screen and calculation state.
+- **Research Planner**: source-linked questions, multiple material configurations, provenance/assumptions, attached coordinate files, matched comparison groups, and dependency-aware calculation plans. Available as an optional Advanced comparison planning button inside Problem & Conditions. Includes adsorption/NEB planning templates, browser persistence and JSON import/export. See the [Vietnamese guide](docs/research-planner.vi.md).
+- English-only interface with shared screen and calculation state.
 - Embedded [3Dmol.js](https://3dmol.org/) structure viewer in **Problem & Conditions**: open POSCAR / CONTCAR (with element names), `.vasp`, `.cif`, or `.xyz`; switch between orthographic XY / XZ / YZ views and free rotation, toggle the unit cell and inferred bonds, zoom, and save PNG images.
 - Literature search, source links, and seed-data download.
 - Problem and condition editing; VASP / Quantum ESPRESSO **draft** input generation.

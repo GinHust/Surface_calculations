@@ -132,7 +132,7 @@
     const error = panel.querySelector('.structure-error');
     const cell = panel.querySelector('[data-sv-cell]');
     const bonds = panel.querySelector('[data-sv-bonds]');
-    let locale = 'ko', viewer, model, record, angle = 'top', pending = false, request = 0, errorKey = '';
+    let locale = 'en', viewer, model, record, angle = 'top', pending = false, request = 0, errorKey = '';
     const t = key => labels[key][locale === 'en' ? 1 : 0];
     function update() {
       panel.querySelectorAll('[data-sv-text]').forEach(el => { el.textContent = t(el.dataset.svText); });
@@ -230,7 +230,7 @@
     new ResizeObserver(() => { if (viewer && canvas.isConnected && canvas.clientWidth) { viewer.resize(); viewer.render(); } }).observe(canvas);
     return {
       loadFile(name, text) { return load(name, () => Promise.resolve(text)); },
-      mount(host, nextLocale) { locale = nextLocale; host.appendChild(panel); update(); if (viewer) { viewer.resize(); viewer.render(); } }
+      mount(host, nextLocale) { locale = 'en'; host.appendChild(panel); update(); if (viewer) { viewer.resize(); viewer.render(); } }
     };
   }
   const api = {create, prepareFile, normalizePOSCAR, demo};
