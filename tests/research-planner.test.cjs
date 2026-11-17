@@ -99,7 +99,7 @@ test('application connects literature, planner groups and draft manifests withou
   const content=host(),message=host(),plannerHost=host(),root=host();
   root.querySelector=selector=>selector==='#sl-content'?content:selector==='#sl-message'?message:selector==='#sl-planner-host'&&content.innerHTML.includes('sl-planner-host')?plannerHost:null;
   const globals={};const window={addEventListener:(type,fn)=>globals[type]=fn};
-  const context=vm.createContext({document:{getElementById:()=>root,createTreeWalker:()=>({nextNode:()=>null})},NodeFilter:{SHOW_TEXT:4},window,TextEncoder,SurfacePaperModel:require('../src/paper-model.js'),SurfaceResearchPlanner:planner,SurfaceStructureViewer:{prepareFile:parse,create:()=>({mount(){},loadFile(){}})}});
+  const context=vm.createContext({document:{getElementById:()=>root,createTreeWalker:()=>({nextNode:()=>null})},NodeFilter:{SHOW_TEXT:4},window,TextEncoder,SurfaceResearchAssistant:require('../src/research-assistant.js'),SurfacePaperModel:require('../src/paper-model.js'),SurfaceResearchPlanner:planner,SurfaceStructureViewer:{prepareFile:parse,create:()=>({mount(){},loadFile(){}})}});
   root.setAttribute=()=>{};
   let html=fs.readFileSync(require.resolve('../src/app.html'),'utf8').replace('__LITERATURE_SOURCES_JSON__',JSON.stringify(sources)).replace('__L01_PROFILE_JSON__',JSON.stringify(require('../data/l01-model.json')));
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);

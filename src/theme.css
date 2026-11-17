@@ -241,6 +241,14 @@ body.literature-app.embedded main {padding-top:4px}
   #surface-lab-bilingual .button:hover,#surface-lab-bilingual .dbitem:hover {transform:none}
 }
 
+#surface-lab-bilingual .ra-candidates {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+#surface-lab-bilingual .ra-candidates .item {border:1px solid var(--line);border-radius:8px;padding:14px;margin:0;cursor:pointer}
+#surface-lab-bilingual .ra-candidates .item:has(input:checked) {border-color:var(--accent);background:var(--soft)}
+#surface-lab-bilingual .ra-candidates input[type=radio] {display:inline-block;width:auto;margin:0 6px 0 0;accent-color:var(--accent)}
+#surface-lab-bilingual .research-assistant textarea {resize:vertical}
+#surface-lab-bilingual .research-assistant .record {overflow-wrap:anywhere}
+@media(max-width:700px) {#surface-lab-bilingual .ra-candidates {grid-template-columns:1fr}}
+
 /* Shell and paper-search dialog. Scoped to avoid changing iframe contents. */
 html[data-visualize-standalone]:has(>body.surface-host) {color-scheme:light; background:#edf2f6}
 html[data-visualize-standalone]>body.surface-host {padding:20px; background:#edf2f6; max-width:1640px; margin:0 auto}

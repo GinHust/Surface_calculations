@@ -26,6 +26,11 @@ if fragment.count(planner_marker) != 1:
     raise ValueError('Expected exactly one research planner placeholder')
 planner = (ROOT / 'src/research-planner.js').read_text(encoding='utf-8')
 fragment = fragment.replace(planner_marker, planner.replace('</script', '<\\/script'))
+assistant_marker = '__RESEARCH_ASSISTANT_JS__'
+if fragment.count(assistant_marker) != 1:
+    raise ValueError('Expected exactly one research assistant placeholder')
+assistant = (ROOT / 'src/research-assistant.js').read_text(encoding='utf-8')
+fragment = fragment.replace(assistant_marker, assistant.replace('</script', '<\\/script'))
 paper_model_marker = '__PAPER_MODEL_JS__'
 if fragment.count(paper_model_marker) != 1:
     raise ValueError('Expected exactly one paper model placeholder')
