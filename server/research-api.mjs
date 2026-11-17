@@ -63,6 +63,7 @@ export function createHandler(env,fetcher=fetch){
     const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','Vary':'Origin','X-Content-Type-Options':'nosniff'};
     if(allowed.has(origin)){headers['Access-Control-Allow-Origin']=origin;headers['Access-Control-Allow-Methods']='POST, OPTIONS';headers['Access-Control-Allow-Headers']='Content-Type, Authorization';}
     const send=(code,value)=>{res.writeHead(code,headers);res.end(JSON.stringify(value));};
+    if(req.url==='/health'&&(req.method==='GET'||req.method==='HEAD'))return send(200,{status:'ok'});
     if(req.url!=='/analyze')return send(404,{error:'Not found.'});
     if(!allowed.has(origin))return send(403,{error:'Origin is not allowed.'});
     if(req.method==='OPTIONS'){res.writeHead(204,headers);res.end();return;}

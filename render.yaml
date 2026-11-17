@@ -1,0 +1,21 @@
+# Deploy only the private analysis backend; the website stays on GitHub Pages.
+services:
+  - type: web
+    name: surface-paper-analysis
+    runtime: node
+    plan: free
+    buildCommand: node --check server/research-api.mjs
+    startCommand: node server/research-api.mjs
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: ALLOWED_ORIGINS
+        value: https://ginhust.github.io
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        sync: false
+      - key: ANALYSIS_ACCESS_TOKEN
+        generateValue: true

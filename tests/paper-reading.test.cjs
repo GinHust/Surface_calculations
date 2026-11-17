@@ -66,6 +66,7 @@ test('HTTP service requires allowed origin and authorization, returns verified J
   const server=http.createServer(createHandler({ALLOWED_ORIGINS:'https://example.com',ANALYSIS_ACCESS_TOKEN:'test-access',OPENAI_API_KEY:'test',OPENAI_MODEL:'test'},async()=>Response.json({status:'completed',output:[{content:[{type:'output_text',text:JSON.stringify(analysis(data))}]}]})));
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url='http://127.0.0.1:'+server.address().port+'/analyze';
   try{
+    const health=await fetch(url.replace('/analyze','/health'));assert.equal(health.status,200);assert.deepEqual(await health.json(),{status:'ok'});
     const headers={'Origin':'https://example.com','Content-Type':'application/json','Authorization':'Bearer test-access'};
     assert.equal((await fetch(url,{method:'POST',headers:{...headers,Origin:'https://untrusted.example'},body:'{}'})).status,403);
     assert.equal((await fetch(url,{method:'POST',headers:{...headers,Authorization:''},body:'{}'})).status,401);

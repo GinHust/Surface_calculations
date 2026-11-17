@@ -26,6 +26,18 @@ Giới hạn: sáu paper mỗi phiên, 10 MB mỗi PDF, tối đa 100 trang/PDF;
 
 ## Kích hoạt backend AI
 
+### Thiết lập nhanh với Render
+
+1. Mở [Deploy to Render](https://render.com/deploy?repo=https://github.com/GinHust/Surface_calculations), đăng nhập Render và kết nối repository khi được yêu cầu. Cấu hình `render.yaml` đã chọn backend Node.js và gói Free; kiểm tra thông tin gói trước khi chấp nhận triển khai. Không cần chuyển website khỏi GitHub Pages.
+2. Chuẩn bị API key của OpenAI trong tài khoản API riêng. Nhập trực tiếp vào `OPENAI_API_KEY` trên Render. Đặt `OPENAI_MODEL` thành ID model khả dụng cho tài khoản, có hỗ trợ Responses và Structured Outputs. Không nhập khóa API vào chat hoặc mã nguồn.
+3. Chọn triển khai sau khi đã xem lại cấu hình. Khi dịch vụ chạy, Render cung cấp URL dạng `https://surface-paper-analysis-....onrender.com`. Mở URL đó với `/health`; phản hồi `{"status":"ok"}` xác nhận tiến trình đã chạy, chưa chứng minh kết nối AI hoạt động.
+4. Trong phần Environment của dịch vụ, lấy giá trị `ANALYSIS_ACCESS_TOKEN` do Render tạo tự động. Đây là token bảo vệ backend riêng, khác provider API key.
+5. Vào website → Problem & Conditions → Read papers & define a research problem → AI analysis connection. Nhập `https://<tên-dịch-vụ>.onrender.com/analyze` và service access token. Chọn một paper có văn bản rồi chạy phân tích để kiểm tra kết nối AI thật.
+
+Render Free có thể tạm dừng dịch vụ khi không dùng, nên lần gọi đầu sau thời gian nghỉ có thể chậm. Hãy thử lại nếu lần đầu bị timeout. API AI có chi phí riêng với gói ChatGPT; kiểm tra billing và mức sử dụng trong tài khoản API. Cấu hình shortcut tắt tự triển khai backend sau mỗi push; dùng Manual Deploy trên Render khi cần cập nhật backend. GitHub Pages vẫn cập nhật theo workflow hiện có.
+
+### Cấu hình dịch vụ riêng
+
 Mã dịch vụ nằm ở `server/research-api.mjs`, dùng Node.js 24 và các thư viện chuẩn. Nó gọi Responses API với Structured Outputs và `store: false`, rồi kiểm tra lại từng trích dẫn. Nó không lưu paper trong cơ sở dữ liệu hay tự tải URL bên ngoài. Không ghi nội dung paper hoặc token vào log ứng dụng; chính sách lưu của nhà cung cấp API và hạ tầng hosting cần được kiểm tra riêng.
 
 1. Triển khai thư mục repository lên một dịch vụ chạy Node.js có HTTPS. Đây là backend độc lập; GitHub Pages chỉ phục vụ frontend tĩnh.
