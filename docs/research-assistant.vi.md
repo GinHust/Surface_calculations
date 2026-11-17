@@ -1,5 +1,7 @@
 # Gợi ý câu hỏi và tổng hợp bài toán nghiên cứu
 
+Luồng chính mới là [Từ paper đến định nghĩa bài toán](paper-reading.vi.md). Các mẫu được mô tả dưới đây được giữ trong mục thu gọn **Manual question templates**.
+
 Trong **Problem & Conditions**, dùng mục **Question suggestions & research synthesis** trước khi tạo đầu vào tính toán. Giao diện tiếp tục sử dụng tiếng Anh theo quy ước của hệ thống.
 
 1. Nhập mục tiêu, khoảng trống nghiên cứu và giả thuyết có thể kiểm chứng. Xác định bề mặt, ô mô phỏng, số lớp, độ phủ và vị trí nitơ dự kiến.

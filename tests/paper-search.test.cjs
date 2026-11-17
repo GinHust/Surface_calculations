@@ -34,3 +34,14 @@ test('embedded literature search inherits keywords and keeps online results abov
   for(const m of source.matchAll(/<script>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
   const app=fs.readFileSync(require.resolve('../src/app.html'),'utf8');assert(app.includes('Find papers online'));assert(app.includes('Find related papers'));assert(!app.includes('class="nav" data-go="plan"'));
 });
+
+test('selected papers transfer only from the same-origin search iframe and pending standalone selection waits for app readiness',()=>{
+  const events={},sent=[],paper={title:'Selected paper',abstract:'A test abstract.'},app={contentWindow:{postMessage:value=>sent.push(value)}},search={contentWindow:{}};
+  const dialog={open:true,close(){this.open=false;},addEventListener(){}};
+  const elements={'codex-visualization':app,'paper-search-dialog':dialog,'paper-search-frame':search,'paper-search-full':{},'paper-search-close':{addEventListener(){}}};
+  const context={URL,JSON,sessionStorage:{getItem:()=>JSON.stringify(paper),removeItem(){}},document:{getElementById:id=>elements[id]},window:{location:{href:'https://example.com/index.html',origin:'https://example.com'},addEventListener:(k,fn)=>events[k]=fn}};
+  new vm.Script(fs.readFileSync(require.resolve('../src/paper-search-bridge.js'),'utf8')).runInNewContext(context);
+  events.message({source:search.contentWindow,origin:'https://evil.example',data:{type:'surface-paper-selected',paper}});assert.equal(sent.length,0);
+  events.message({source:app.contentWindow,data:{type:'surface-paper-reader-ready'}});assert.equal(sent.length,1);assert.equal(sent[0].paper.title,paper.title);assert.equal(dialog.open,false);
+  events.message({source:search.contentWindow,origin:'https://example.com',data:{type:'surface-paper-selected',paper}});assert.equal(sent.length,2);
+});

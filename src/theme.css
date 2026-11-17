@@ -247,6 +247,11 @@ body.literature-app.embedded main {padding-top:4px}
 #surface-lab-bilingual .ra-candidates input[type=radio] {display:inline-block;width:auto;margin:0 6px 0 0;accent-color:var(--accent)}
 #surface-lab-bilingual .research-assistant textarea {resize:vertical}
 #surface-lab-bilingual .research-assistant .record {overflow-wrap:anywhere}
+#surface-lab-bilingual .paper-reading .record {overflow-wrap:anywhere;margin:12px 0}
+#surface-lab-bilingual .paper-reading .pr-text {white-space:pre-wrap;max-height:340px;overflow:auto}
+#surface-lab-bilingual .paper-reading blockquote {margin:10px 0;padding:10px 14px;border-left:3px solid var(--accent);background:var(--soft)}
+#surface-lab-bilingual .paper-reading textarea {resize:vertical}
+#surface-lab-bilingual .paper-reading h3 {margin-top:18px}
 @media(max-width:700px) {#surface-lab-bilingual .ra-candidates {grid-template-columns:1fr}}
 
 /* Shell and paper-search dialog. Scoped to avoid changing iframe contents. */

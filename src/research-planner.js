@@ -105,6 +105,7 @@
     if(bytes(raw)>MAX_BYTES)throw new Error('size');
     if(!raw||raw.version!==VERSION||!Array.isArray(raw.studies)||!raw.studies.length||raw.studies.length>8)throw new Error('schema');
     const out={version:VERSION,locale:'en',activeId:raw.activeId,studies:[]};
+    if(raw.references!==undefined){out.references=validateReferences(raw.references);knownSourceIds=[...knownSourceIds,...out.references.map(s=>s.id)];}
     const identifiers=new Set();
     const text=(value,max=2000)=>{if(typeof value!=='string'||value.length>max)throw new Error('schema');return value;};
     const identity=value=>{text(value,100);if(!/^[a-zA-Z0-9_-]+$/.test(value)||identifiers.has(value))throw new Error('schema');identifiers.add(value);return value;};
@@ -139,9 +140,18 @@
   }
   const words={"title":"Research Planner","intro":"One question → multiple configurations → comparison groups → calculation dependencies.","scope":"This is a research plan. Automated checks flag missing data; they do not establish physical validity or execute DFT.","local":"Plans are stored in this browser when available. Export JSON to back up or transfer.","saved":"Saved in this browser","unsaved":"Storage unavailable — export JSON before closing","problem":"Research problem","new":"New problem","adsTemplate":"Template: N effect on CH₃ adsorption","nebTemplate":"Template: reaction pathways","question":"Specific research question","criterion":"Target quantity and decision criterion","sources":"Evidence sources","configs":"Material configurations","addConfig":"Add configuration","duplicate":"Duplicate record","remove":"Remove","edit":"Edit","label":"Configuration name","orientation":"Surface orientation","termination":"Surface termination","cellModel":"Slab / supercell model (e.g. 2×2, 8 layers)","nitrogenSite":"N position / state","adsorbate":"Adsorbate (none if absent)","charge":"Cell charge (e)","spin":"Spin channels","origin":"Structure provenance","paper":"Author / supplementary file","reconstructed":"Reconstructed from paper","proposed":"Proposed model","sourceId":"Related source","locator":"Figure / table / section / SI filename","assumptions":"Assumptions and unresolved details","optimized":"I have reviewed the relaxation result for this configuration","attachment":"Structure: POSCAR / CONTCAR / VASP / CIF / XYZ · max 200 KiB","noFile":"No coordinate file","preview":"Preview in 3D","detach":"Detach file","use":"Use configuration in Input Builder","groups":"Comparison groups","addGroup":"Add comparison group","left":"Configuration A / initial / clean slab","right":"Configuration B / final / adsorbed slab","type":"Comparison objective","variable":"Changed factor / reaction step","reference":"Reference energies / chemical potentials and conventions","mapping":"I have checked atom-by-atom mapping between NEB endpoints","relative":"Relative stability: same composition","formation":"Formation energy: chemical references required","adsorption":"Adsorption: clean → adsorbed","neb":"Reaction path / NEB","protocol":"Shared protocol for this research problem","engine":"Calculation engine","xc":"Exchange–correlation functional","cutoff":"Cutoff (VASP: eV; QE: Ry)","kpoints":"k-point grid (e.g. 3 3 1)","pseudo":"Pseudopotential library / version","convergence":"Convergence plan: cutoff, k grid, slab, vacuum; spin/charge treatment","checks":"Planning checks","ready":"Group record complete for review; not scientifically validated","jobs":"Planned calculations","dependencies":"Dependencies","status":"Status","draft":"Draft","blocked":"Missing data","prepare":"Use group in Input Builder","export":"Export all plans as JSON","import":"Import plans JSON (append)","exportJobs":"Export calculation plan","emptyConfigs":"Add configurations or start with a template. Templates are planning records without coordinates.","emptyGroups":"At least two configurations are needed. To study N effects on adsorption, create one group per N-free/N-containing surface and use the same CH₃ reference.","noGroups":"No comparison group is defined yet. Add one only after selecting scientifically compatible endpoints and defining the required energy reference.","linked":"Source linked to the active research problem","error":"Cannot complete action. Check JSON/structure format and limits: 8 problems, 40 configurations/groups each, 1 MiB total.","referenced":"Configuration is used by a group. Remove the related group first.","templateNote":"Templates contain illustrative English names and hypotheses. Replace them with your actual question and structures.","fileNote":"Duplicating copies the record; it does not edit coordinates. Supply and review the matching file when changing N, adsorbates or charge."};
   const issueWords={"question":"Research question missing.","criterion":"Target quantity / decision criterion missing.","sources":"Evidence source missing.","variable":"Changed factor missing.","pair":"Select two different configurations.","metadata":"Incomplete configuration metadata or invalid spin/charge.","provenance":"Each configuration needs a source and figure/table/SI location.","assumptions":"Reconstructed/proposed structures need assumptions.","structure":"Coordinate file missing.","protocol":"Shared protocol, pseudopotentials or convergence plan incomplete.","matchedSlab":"Different orientation/termination/slab model. Use matched groups.","chargeSpin":"Different spin/charge requires a separate reference protocol; this planner requires matching values.","invalidStructure":"Invalid structure file.","unknownComposition":"CIF preview only; convert to POSCAR for composition/NEB checks.","unknownCell":"Periodic cell unknown; XYZ is insufficient for slab/NEB checks.","cell":"Actual cells in the files differ.","composition":"Atomic compositions differ. Relative stability/NEB requires equal composition; use formation energy when appropriate.","adsorptionComposition":"B must add adsorbate atoms to A. Review both files.","ordering":"Element ordering differs between NEB endpoints.","reference":"Specify reference energies / chemical potentials, spin and conventions.","endpoints":"Relax and review both endpoints before NEB.","mapping":"Review atom mapping, including atoms of the same element."};
+  function validateReferences(records){
+    if(!Array.isArray(records)||records.length>40)throw Error('schema');
+    const seen=new Set();return records.map(raw=>{if(!raw||!/^PAPER_[a-z0-9]+$/.test(raw.id)||seen.has(raw.id))throw Error('schema');seen.add(raw.id);const s={id:raw.id};
+      for(const key of ['title','authors','year','kind','url','open','status','finding','need','locator','caution']){if(typeof raw[key]!=='string'||raw[key].length>2000)throw Error('schema');s[key]=raw[key];}
+      for(const key of ['url','open'])if(s[key]){try{if(new URL(s[key]).protocol!=='https:')throw Error('schema');}catch(_){throw Error('schema');}}
+      s.value=null;return s;});
+  }
   function create({sources, parser, initial, onChange, onUse, createViewer}) {
     const known=sources.map(s=>s.id);
     let data; try {data=initial?validateDocument(initial,known,parser):empty();}catch(_){data=empty();}
+    function installReferences(records=[]){for(const record of records){if(!known.includes(record.id)){known.push(record.id);sources.push(record);}else{const existing=sources.find(s=>s.id===record.id);if(existing)Object.assign(existing,record);}}}
+    installReferences(data.references);
     let host, selected='', notice='', storage='unsaved', viewer, previewing='';
     const t=key=>words[key]||key;
     const it=key=>issueWords[key]||key;
@@ -183,9 +193,9 @@
       const link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
     }
     function commit(mutator, redraw=true) {
-      const previous=copy(data);
+      const previous=copy(data);let success=true;
       try {mutator();if(data.studies.length>8||current().configurations.length>40||current().groups.length>40)throw new Error('size');persist();notice='';}
-      catch(_){data=previous;notice=t('error');}
+      catch(_){data=previous;success=false;notice=t('error');}
       if(redraw)render();
       else {
         const status=host?.querySelector('[data-rp-notice]');if(status)status.textContent=notice;
@@ -193,6 +203,7 @@
         // summaries; checks below are refreshed without replacing the editor.
         refreshChecks();
       }
+      return success;
     }
     function refreshChecks() {
       const s=current();
@@ -252,7 +263,8 @@
           try {
             if(file.size>MAX_BYTES)throw new Error('size');
             const imported=validateDocument(JSON.parse(await file.text()),known,parser);
-            commit(()=>{for(const s of imported.studies){const ids={};s.id=id('P');for(const c of s.configurations){const old=c.id;c.id=id('C');ids[old]=c.id;}for(const g of s.groups){g.id=id('G');g.left=ids[g.left];g.right=ids[g.right];}data.studies.push(s);}data.activeId=data.studies.at(-1).id;previewing='';});
+            const combined=validateReferences([...new Map([...(data.references||[]),...(imported.references||[])].map(s=>[s.id,s])).values()]);
+            const added=commit(()=>{if(combined.length)data.references=combined;for(const s of imported.studies){const ids={};s.id=id('P');for(const c of s.configurations){const old=c.id;c.id=id('C');ids[old]=c.id;}for(const g of s.groups){g.id=id('G');g.left=ids[g.left];g.right=ids[g.right];}data.studies.push(s);}data.activeId=data.studies.at(-1).id;previewing='';});if(added){installReferences(combined);render();}
           }catch(_){notice=t('error');render();}return;
         }
         const s=current();
@@ -273,7 +285,8 @@
     return {
       mount(target){if(host!==target){host=target;bind();}render();},
       linkSource(sourceId){if(!known.includes(sourceId))return;commit(()=>{const s=current();if(!s.sourceIds.includes(sourceId))s.sourceIds.push(sourceId);});notice=t('linked');render();},
-      restore(value){try{data=validateDocument(value,known,parser);render();}catch(_){notice=t('error');render();}},
+      restore(value){try{data=validateDocument(value,known,parser);installReferences(data.references);render();}catch(_){notice=t('error');render();}},
+      registerSources(records){const checked=validateReferences(records);const added=commit(()=>{data.references=validateReferences([...new Map([...(data.references||[]),...checked].map(s=>[s.id,s])).values()]);},false);if(added)installReferences(checked);return added;},
       setStorage(value){storage=value;if(host?.isConnected){const el=host.querySelector('[data-rp-storage]');if(el)el.textContent=t(storage);}},
       snapshot(){return copy(data);}
       ,addStudy(value){
