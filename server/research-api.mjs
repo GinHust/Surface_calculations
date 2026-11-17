@@ -36,14 +36,32 @@ export function validateInput(raw){
   const seen=new Set();const questions=(raw.questions||[]).map(q=>{if(!q||!/^q[1-9]\d?$/.test(q.id)||seen.has(q.id)||typeof q.question!=='string'||q.question.length>3000)throw Error('Invalid previous question.');seen.add(q.id);return {id:q.id,question:q.question};});
   return {goal:raw.goal,papers:papers.map(({id,title,doi,scope})=>({id,title,doi,scope})),segments,answers,questions};
 }
+export function providerConfig(env){
+  if(env.AI_PROVIDER==='vercel'){
+    return {provider:'vercel',url:'https://ai-gateway.vercel.sh/v1/responses',key:env.AI_GATEWAY_API_KEY||env.VERCEL_OIDC_TOKEN,model:env.AI_MODEL||'openai/gpt-5.4-mini'};
+  }
+  return {provider:'openai',url:'https://api.openai.com/v1/responses',key:env.OPENAI_API_KEY,model:env.OPENAI_MODEL};
+}
+export function requestEnvironment(req,env){
+  // Vercel injects a rotating OIDC token into each invocation's request header.
+  // Read it for each call; build-time environment tokens must not be cached.
+  if(env.AI_PROVIDER!=='vercel')return env;
+  const token=req.headers['x-vercel-oidc-token'];
+  return {...env,VERCEL_OIDC_TOKEN:typeof token==='string'?token:env.VERCEL_OIDC_TOKEN};
+}
 export async function analyze(raw,env,fetcher=fetch){
   const input=validateInput(raw);
-  if(!env.OPENAI_API_KEY||!env.OPENAI_MODEL)throw Error('Analysis provider is not configured.');
-  const response=await fetcher('https://api.openai.com/v1/responses',{
-    method:'POST',headers:{'Authorization':'Bearer '+env.OPENAI_API_KEY,'Content-Type':'application/json'},signal:AbortSignal.timeout(90000),
-    body:JSON.stringify({model:env.OPENAI_MODEL,store:false,instructions,input:JSON.stringify(input),max_output_tokens:9000,text:{format:{type:'json_schema',name:'paper_grounded_problem',strict:true,schema}}})
+  const provider=providerConfig(env);
+  if(!provider.key||!provider.model)throw Error('Analysis provider is not configured.');
+  const response=await fetcher(provider.url,{
+    method:'POST',headers:{'Authorization':'Bearer '+provider.key,'Content-Type':'application/json'},signal:AbortSignal.timeout(90000),
+    body:JSON.stringify({model:provider.model,store:false,instructions,input:JSON.stringify(input),max_output_tokens:9000,text:{format:{type:'json_schema',name:'paper_grounded_problem',strict:true,schema}}})
   });
-  if(!response.ok)throw Error('Analysis provider request failed ('+response.status+'). Check service configuration or retry.');
+  if(response.status===402)throw Error('AI credits are unavailable or exhausted. Check the AI provider credit balance.');
+  if(!response.ok){
+    let detail='';try{const problem=await response.json();const message=problem.error?.message||problem.message||problem.error;if(typeof message==='string')detail=message.replaceAll(provider.key,'[redacted]').replace(/Bearer\s+\S+|(?:sk-|vck_)[\w-]+/g,'[redacted]').slice(0,500);}catch(_){}
+    throw Error('Analysis provider request failed ('+response.status+'). '+(detail||'Check service configuration or retry.'));
+  }
   const result=await response.json();if(result.status!=='completed')throw Error('Analysis did not complete. Reduce input or retry.');
   const text=(result.output||[]).flatMap(item=>item.content||[]).filter(c=>c.type==='output_text').map(c=>c.text).join('');
   let rawAnalysis;try{rawAnalysis=JSON.parse(text);}catch(_){throw Error('Analysis provider returned no valid structured result.');}
@@ -71,17 +89,31 @@ export function createHandler(env,fetcher=fetch){
     if(!tokenMatches(req.headers.authorization,env.ANALYSIS_ACCESS_TOKEN))return send(401,{error:'A valid service access token is required.'});
     if(!String(req.headers['content-type']||'').startsWith('application/json'))return send(415,{error:'Use application/json.'});
     const now=Date.now();if(now-lastSweep>60000){for(const [key,item] of rate)if(now-item.start>60000)rate.delete(key);lastSweep=now;}
-    const ip=req.socket.remoteAddress||'unknown',bucket=rate.get(ip)||{start:now,count:0};
+    const ip=req.socket?.remoteAddress||'unknown',bucket=rate.get(ip)||{start:now,count:0};
     if(now-bucket.start>60000){bucket.start=now;bucket.count=0;}bucket.count++;rate.set(ip,bucket);
     if(bucket.count>6)return send(429,{error:'Too many analysis requests. Wait one minute.'});
-    const chunks=[];let size=0;try{for await(const chunk of req){size+=chunk.length;if(size>1024*1024)return send(413,{error:'Request exceeds 1 MiB.'});chunks.push(chunk);}}
-    catch(_){return send(400,{error:'Could not read request.'});}
-    let input;try{input=JSON.parse(Buffer.concat(chunks).toString('utf8'));validateInput(input);}catch(e){return send(400,{error:e.message||'Invalid request.'});}
-    try{const analysis=await analyze(input,env,fetcher);return send(200,{analysis});}
+    let input;
+    try{
+      // Vercel parses application/json into req.body; a standalone Node server
+      // supplies a raw stream. Both paths enforce the same size and schema limits.
+      if(req.body!==undefined){
+        const text=Buffer.isBuffer(req.body)?req.body.toString('utf8'):typeof req.body==='string'?req.body:JSON.stringify(req.body);
+        if(Buffer.byteLength(text)>1024*1024)return send(413,{error:'Request exceeds 1 MiB.'});
+        input=JSON.parse(text);
+      }else{
+        const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>1024*1024)return send(413,{error:'Request exceeds 1 MiB.'});chunks.push(chunk);}
+        input=JSON.parse(Buffer.concat(chunks).toString('utf8'));
+      }
+      validateInput(input);
+    }catch(e){return send(400,{error:e.message||'Invalid request.'});}
+    const runtimeEnv=requestEnvironment(req,env),provider=providerConfig(runtimeEnv);
+    if(!provider.key||!provider.model)return send(503,{error:'AI is not configured. Configure Vercel AI Gateway authentication or the OpenAI API settings on the backend.'});
+    try{const analysis=await analyze(input,runtimeEnv,fetcher);return send(200,{analysis});}
     catch(e){return send(502,{error:e.message||'Analysis failed.'});}
   };
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
-  for(const name of ['OPENAI_API_KEY','OPENAI_MODEL','ANALYSIS_ACCESS_TOKEN','ALLOWED_ORIGINS'])if(!process.env[name])throw Error('Missing service environment variable: '+name);
+  for(const name of ['ANALYSIS_ACCESS_TOKEN','ALLOWED_ORIGINS'])if(!process.env[name])throw Error('Missing service environment variable: '+name);
+  const provider=providerConfig(process.env);if(!provider.key||!provider.model)throw Error('Missing AI provider authentication or model configuration.');
   const port=Number(process.env.PORT||8787);http.createServer(createHandler(process.env)).listen(port,'0.0.0.0',()=>console.log('Paper analysis service listening on port '+port));
 }

@@ -41,6 +41,7 @@ const reactions=[['R01','H abstraction / passivation','활성 site 생성·소�
 let state={locale:'en',page:'db',selected:'L01',filter:'전체',query:'',engine:'VASP',problem:'질소 유무에 따른 CH₂ 표면 이동 장벽 비교',task:'relax',cutoff:500,rho:480,k:'3 3 1',relaxKx:3,relaxKy:3,relaxKz:1,dosKx:21,dosKy:21,dosKz:1,scf:'1e-6',force:.02,spin:'2',charge:0,vacuum:18,layers:8,base:2,structure:'H-terminated diamond (100)-2×1 · 구조 등록 대기',nsite:'표면 매입 N',xc:'PBE',nodes:1,ranks:32,wall:'02:00:00',scheduler:'Slurm',stage:0,result:false,generated:false,file:'',post:false,source:'demo',temp:1100,dg:1.2};
 let files={};
 let researchPlanner, paperModel, researchAssistant, paperReading, savingState=false;
+const analysisEndpoint='https://surface-paper-analysis.vercel.app/analyze';
 const stateWriter='surface-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
 const l01Profile=__L01_PROFILE_JSON__;
 
@@ -89,7 +90,7 @@ const defaultProblem='질소 유무에 따른 CH₂ 표면 이동 장벽 비교'
 
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const nl=String.fromCharCode(10);
-function applySaved(saved){if(saved?.privateContent?.state)Object.assign(state,saved.privateContent.state);state.locale='en';if(state.page==='plan')state.page='define';if(state.filter!=='전체')state.filter=translateText(state.filter);if(researchPlanner&&state.research)researchPlanner.restore(state.research);if(researchAssistant)researchAssistant.restore(state.discovery||{});if(paperReading)paperReading.restore(state.paperReading||{});if(state.generated)files=makeFiles();}
+function applySaved(saved){if(saved?.privateContent?.state)Object.assign(state,saved.privateContent.state);state.locale='en';if(state.page==='plan')state.page='define';if(state.filter!=='전체')state.filter=translateText(state.filter);if(researchPlanner&&state.research)researchPlanner.restore(state.research);if(researchAssistant)researchAssistant.restore(state.discovery||{});if(paperReading)paperReading.restore({...state.paperReading,endpoint:state.paperReading?.endpoint||analysisEndpoint});if(state.generated)files=makeFiles();}
 applySaved(window.openai?.widgetState);
 function save(){
   if(!window.openai?.setWidgetState){researchPlanner?.setStorage('unsaved');return;}
@@ -141,7 +142,7 @@ researchAssistant=SurfaceResearchAssistant.create({sources,initial:state.discove
   onCreate(value){const study=SurfaceResearchAssistant.buildStudy(value,sources,SurfaceResearchPlanner);if(!researchPlanner.addStudy(study))return false;state.research=researchPlanner.snapshot();state.problem=study.question;state.page='plan';render();save();return true;}
 });
 const analysisRequests=new Map();
-paperReading=SurfacePaperReading.create({initial:state.paperReading,
+paperReading=SurfacePaperReading.create({initial:{...state.paperReading,endpoint:state.paperReading?.endpoint||analysisEndpoint},
   onChange(value){state.paperReading=value;save();},
   onSources(records){researchPlanner.registerSources(records);state.research=researchPlanner.snapshot();save();},
   onSearch(query){window.parent.postMessage({type:'surface-paper-search',query},'*');},

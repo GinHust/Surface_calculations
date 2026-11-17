@@ -251,6 +251,7 @@ body.literature-app.embedded main {padding-top:4px}
 #surface-lab-bilingual .paper-reading .pr-text {white-space:pre-wrap;max-height:340px;overflow:auto}
 #surface-lab-bilingual .paper-reading blockquote {margin:10px 0;padding:10px 14px;border-left:3px solid var(--accent);background:var(--soft)}
 #surface-lab-bilingual .paper-reading textarea {resize:vertical}
+#surface-lab-bilingual .paper-reading [data-pr-status] {overflow-wrap:anywhere}
 #surface-lab-bilingual .paper-reading h3 {margin-top:18px}
 @media(max-width:700px) {#surface-lab-bilingual .ra-candidates {grid-template-columns:1fr}}
 

@@ -1,0 +1,16 @@
+.git
+.github
+.vercel
+.presentation-build
+tmp
+output
+outputs
+docs
+tests
+vocabulary-daily
+vocabulary-*.tar.gz
+vocabulary-*.jpg
+.env
+.env.*
+**/.env
+**/.env.*

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "node --check server/research-api.mjs",
+  "outputDirectory": "vercel-public",
+  "functions": {
+    "api/analyze.mjs": {
+      "maxDuration": 240,
+      "includeFiles": "src/paper-reading.js"
+    },
+    "api/health.mjs": {
+      "includeFiles": "src/paper-reading.js"
+    }
+  },
+  "rewrites": [
+    {"source": "/analyze", "destination": "/api/analyze"},
+    {"source": "/health", "destination": "/api/health"}
+  ]
+}

@@ -1,5 +1,7 @@
 # Từ paper đến định nghĩa bài toán tính toán
 
+Backend riêng hiện đã triển khai trên Vercel. Xem [cấu hình Vercel và trạng thái kích hoạt AI thực tế](vercel-backend.vi.md); các hướng dẫn backend/Render dưới đây là phương án cấu hình ban đầu hoặc thay thế.
+
 Luồng chính trong **Problem & Conditions** là **Read papers & define a research problem**. Các mẫu câu hỏi thủ công trước đây được giữ trong mục thu gọn **Manual question templates**.
 
 ## Luồng sử dụng

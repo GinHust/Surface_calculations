@@ -77,3 +77,23 @@ test('HTTP service requires allowed origin and authorization, returns verified J
     assert.equal((await fetch(url,{method:'POST',headers,body:JSON.stringify(data)})).status,429);
   }finally{await new Promise(resolve=>server.close(resolve));}
 });
+
+test('Vercel parsed requests use the same evidence checks without reading an exhausted stream',async()=>{
+  const {createHandler}=await import('../server/research-api.mjs'),data=input();
+  const env={ALLOWED_ORIGINS:'https://example.com',ANALYSIS_ACCESS_TOKEN:'test-access',OPENAI_API_KEY:'test',OPENAI_MODEL:'test'};
+  const handler=createHandler(env,async()=>Response.json({status:'completed',output:[{content:[{type:'output_text',text:JSON.stringify(analysis(data))}]}]}));
+  const invoke=async(body)=>{let status,result;const req={url:'/analyze',method:'POST',headers:{origin:'https://example.com',authorization:'Bearer test-access','content-type':'application/json'},body,async *[Symbol.asyncIterator](){throw Error('Already parsed request must not read the raw stream.');}};await handler(req,{writeHead(code){status=code;},end(text){result=JSON.parse(text);}});return {status,result};};
+  const good=await invoke(data);assert.equal(good.status,200);assert.equal(good.result.analysis.definition.modelType,'neb');
+  assert.equal((await invoke('{broken')).status,400);assert.equal((await invoke('x'.repeat(1024*1024+1))).status,413);
+});
+
+test('Vercel AI Gateway uses project OIDC without an OpenAI key and preserves citation validation',async()=>{
+  const {analyze,providerConfig,requestEnvironment}=await import('../server/research-api.mjs'),data=input();let call;
+  const env={AI_PROVIDER:'vercel',VERCEL_OIDC_TOKEN:'test-oidc',AI_MODEL:'openai/gpt-5.4-mini'};
+  const result=await analyze(data,env,async(url,options)=>{call={url,headers:options.headers,body:JSON.parse(options.body)};return Response.json({status:'completed',output:[{content:[{type:'output_text',text:JSON.stringify(analysis(data))}]}]});});
+  assert.equal(call.url,'https://ai-gateway.vercel.sh/v1/responses');assert.equal(call.headers.Authorization,'Bearer test-oidc');assert.equal(call.body.model,'openai/gpt-5.4-mini');assert.equal(result.definition.modelType,'neb');
+  assert.equal(providerConfig({...env,AI_GATEWAY_API_KEY:'explicit-key'}).key,'explicit-key');
+  assert.equal(providerConfig(requestEnvironment({headers:{'x-vercel-oidc-token':'rotated-token'}},env)).key,'rotated-token');
+  await assert.rejects(()=>analyze(data,env,async()=>Response.json({}, {status:402})),/credits/);
+  await assert.rejects(()=>analyze(data,env,async()=>Response.json({error:{message:'Rejected Bearer test-oidc'}}, {status:403})),error=>error.message.includes('403')&&!error.message.includes('test-oidc'));
+});
