@@ -5,6 +5,9 @@
   "url": "https://arxiv.org/html/2011.04921v1",
   "doi": "https://doi.org/10.1016/j.carbon.2021.03.008",
   "reviewed_on": "2026-11-16",
+  "passage_evidence": [
+    {"id":"L01-cutoff-source","segmentId":"LIBRARY-L01-cutoff","field":"Plane-wave cutoff","value":"600 eV","target":"INCAR: ENCUT","location":"Main text §1 Method","quote":"The cut-off energy for the plane-wave basis is 600 eV.","url":"https://arxiv.org/html/2011.04921v1#S1","checked_on":"2026-11-18"}
+  ],
   "coordinate_status": "No POSCAR, CONTCAR, CIF, XYZ or other atomic-coordinate file was found in the inspected arXiv v1 source archive. This does not establish that no author coordinates exist elsewhere.",
   "reported": [
     {"field": "Surface", "value": "H-terminated diamond (100), reconstructed 2×1", "locator": "Main text §1; Supplement §2"},

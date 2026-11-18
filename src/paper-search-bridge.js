@@ -26,7 +26,7 @@
     }
     if(event.source!==app.contentWindow)return;
     if(event.data?.type==='surface-paper-search'){open(event.data.query);return;}
-    if(event.data?.type==='surface-paper-reader-ready'){if(pendingPaper){deliverPaper(pendingPaper);pendingPaper=null;}return;}
+    if(event.data?.type==='surface-paper-reader-ready'){if(pendingPaper){deliverPaper(pendingPaper);pendingPaper=null;}else{const query=new URL(window.location.href).searchParams,view=query.get('view');if(['evidence','read','db'].includes(view))app.contentWindow.postMessage({type:'surface-workspace-navigate',page:view,paper:query.get('paper')||''},'*');}return;}
     if(event.data?.type==='surface-paper-analysis'){
       const {requestId,endpoint,token,payload}=event.data;
       if(typeof requestId!=='string'||requestId.length>100)return;

@@ -40,6 +40,10 @@ workflow_marker = '__PAPER_WORKFLOW_JS__'
 if fragment.count(workflow_marker) != 1:
     raise ValueError('Expected exactly one multi-agent workflow placeholder')
 fragment = fragment.replace(workflow_marker, (ROOT / 'src/paper-workflow.js').read_text(encoding='utf-8').replace('</script', '<\\/script'))
+evidence_marker = '__PAPER_EVIDENCE_JS__'
+if fragment.count(evidence_marker) != 1:
+    raise ValueError('Expected exactly one paper evidence placeholder')
+fragment = fragment.replace(evidence_marker, (ROOT / 'src/paper-evidence.js').read_text(encoding='utf-8').replace('</script', '<\\/script'))
 paper_model_marker = '__PAPER_MODEL_JS__'
 if fragment.count(paper_model_marker) != 1:
     raise ValueError('Expected exactly one paper model placeholder')

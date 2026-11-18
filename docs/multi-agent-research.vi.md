@@ -1,5 +1,15 @@
 # Đọc paper bằng nhiều agent và tạo bản nháp DFT
 
+## Liên kết thông tin đến paper
+
+Mở **Paper & Evidence** trong menu, hoặc truy cập [trực tiếp bảng L01](https://ginhust.github.io/Surface_calculations/?view=evidence&paper=L01). Đây là một màn hình riêng, có bảng **thông tin → paper/mục nguồn → câu trích → đích nghiên cứu/file DFT**. Literature & Data có nút mở bảng của paper đang chọn; Multi-agent Reader có nút quay về các liên kết.
+
+Các dữ liệu L01 đã lưu được hiển thị ngay, không cần AI. Tóm tắt phương pháp được ghi rõ là tóm tắt, không giả thành trích dẫn. Một đoạn ngắn về cutoff đã được đối chiếu trực tiếp với [§1 Method của bản arXiv v1](https://arxiv.org/html/2011.04921v1#S1) ngày 18/11/2026; bản đầy đủ vẫn phải mở ở paper gốc.
+
+Để tạo thêm liên kết khi AI chưa hoạt động: chọn paper, bấm **Read / attach text for this paper**, tải PDF hoặc dán nội dung, rồi quay lại Paper & Evidence. Nhập trường/thông số, giá trị, câu trích nguyên văn và đích sử dụng. Hệ thống kiểm tra câu trích có trong đoạn nguồn trước khi lưu. **Source passage** mở đoạn nguồn; **Original paper** mở DOI/bài gốc. Nếu thay văn bản hoặc xóa paper, bản ghi cũ bị đánh dấu cần liên kết lại.
+
+Xuất JSON giữ tên bài, DOI/URL, vị trí nguồn, câu trích và đích sử dụng. Gói DFT nháp có thêm `paper-links.json`. Đích sử dụng là ghi chú nghiên cứu; thông số nhập thủ công và tóm tắt thư viện không tự được chèn vào input DFT. Các liên kết lưu trong trạng thái trình duyệt; chưa có cơ sở dữ liệu dùng chung.
+
 Trong **Problem & Conditions**, nhập mục tiêu và tìm paper, hoặc mở **Add your own paper / PDF** để thêm tiêu đề rồi tải PDF/TXT/MD. PDF được trích xuất trong trình duyệt; văn bản đã chọn được gửi tới backend khi chạy phân tích. Tối đa 6 paper, 120.000 ký tự. PDF scan cần OCR trước; kiểm tra lại bảng, công thức và thứ tự văn bản.
 
 ## Bốn agent thật ở backend

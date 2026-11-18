@@ -10,7 +10,7 @@ function replace(text,marker,value){if(text.split(marker).length!==2)throw Error
 const inventory=JSON.parse(read('data/literature-seed.json')),theme=read('src/theme.css');
 let fragment=replace(read('src/app.html'),'__SURFACE_THEME_CSS__',theme);
 fragment=replace(fragment,'__LITERATURE_SOURCES_JSON__',JSON.stringify(inventory.sources).replaceAll('</','<\\/'));
-for(const [marker,file] of [['STRUCTURE_VIEWER','structure-viewer'],['POTCAR_BUILDER','potcar-builder'],['RESEARCH_PLANNER','research-planner'],['RESEARCH_ASSISTANT','research-assistant'],['PAPER_READING','paper-reading'],['PAPER_WORKFLOW','paper-workflow'],['PAPER_MODEL','paper-model']]){
+for(const [marker,file] of [['STRUCTURE_VIEWER','structure-viewer'],['POTCAR_BUILDER','potcar-builder'],['RESEARCH_PLANNER','research-planner'],['RESEARCH_ASSISTANT','research-assistant'],['PAPER_READING','paper-reading'],['PAPER_WORKFLOW','paper-workflow'],['PAPER_EVIDENCE','paper-evidence'],['PAPER_MODEL','paper-model']]){
   // POTCAR is optional in older checkouts; embed it whenever its marker exists.
   if(marker==='POTCAR_BUILDER'&&!fragment.includes('__POTCAR_BUILDER_JS__'))continue;
   fragment=replace(fragment,'__'+marker+'_JS__',read('src/'+file+'.js').replaceAll('</script','<\\/script'));
