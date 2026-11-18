@@ -59,7 +59,8 @@
       const m=analysis.multiAgent.methods,settings=Object.fromEntries(m.settings.map(v=>[v.key,v.value]));
       s.protocol={...s.protocol,engine:settings.engine==='QE'?'Quantum ESPRESSO':'VASP',xc:settings.xc||'',cutoff:settings.engine==='QE'?settings.ecutwfc_Ry||'':settings.engine==='VASP'?settings.cutoff_eV||'':'',kpoints:settings.kmesh||'',pseudo:'',convergence:('Cited draft protocol; verify original text. '+m.missing.join('; ')).slice(0,2000)};
       // Clear template-specific diamond/N assumptions for arbitrary imported papers.
-      s.configurations.forEach(c=>{c.orientation='';c.termination='';c.nitrogenSite='';c.adsorbate='';c.charge='';c.spin=settings.spin||'';c.assumptions=(c.assumptions+'\nMethod: '+m.structure).slice(0,2000);});
+      s.configurations.forEach((c,i)=>{if(['neb','adsorption'].includes(d.modelType))c.label=(i<2?'Control':'Treatment')+' · '+(d.modelType==='neb'?(i%2?'final':'initial'):(i%2?'adsorbed':'clean'));c.orientation='';c.termination='';c.nitrogenSite='';c.adsorbate='';c.charge='';c.spin=settings.spin||'';c.assumptions=(c.assumptions+'\nMethod: '+m.structure).slice(0,2000);});
+      if(['neb','adsorption'].includes(d.modelType))s.groups.forEach((g,i)=>{g.label=i?'Treatment':'Control';g.variable=d.modelType==='neb'?'reaction coordinate':'adsorbate addition';});
     }
     return s;
   }

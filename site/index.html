@@ -3096,7 +3096,8 @@ html[data-visualize-standalone]&gt;body.surface-host {padding:20px; background:#
       const m=analysis.multiAgent.methods,settings=Object.fromEntries(m.settings.map(v=&gt;[v.key,v.value]));
       s.protocol={...s.protocol,engine:settings.engine===&#x27;QE&#x27;?&#x27;Quantum ESPRESSO&#x27;:&#x27;VASP&#x27;,xc:settings.xc||&#x27;&#x27;,cutoff:settings.engine===&#x27;QE&#x27;?settings.ecutwfc_Ry||&#x27;&#x27;:settings.engine===&#x27;VASP&#x27;?settings.cutoff_eV||&#x27;&#x27;:&#x27;&#x27;,kpoints:settings.kmesh||&#x27;&#x27;,pseudo:&#x27;&#x27;,convergence:(&#x27;Cited draft protocol; verify original text. &#x27;+m.missing.join(&#x27;; &#x27;)).slice(0,2000)};
       // Clear template-specific diamond/N assumptions for arbitrary imported papers.
-      s.configurations.forEach(c=&gt;{c.orientation=&#x27;&#x27;;c.termination=&#x27;&#x27;;c.nitrogenSite=&#x27;&#x27;;c.adsorbate=&#x27;&#x27;;c.charge=&#x27;&#x27;;c.spin=settings.spin||&#x27;&#x27;;c.assumptions=(c.assumptions+&#x27;\nMethod: &#x27;+m.structure).slice(0,2000);});
+      s.configurations.forEach((c,i)=&gt;{if([&#x27;neb&#x27;,&#x27;adsorption&#x27;].includes(d.modelType))c.label=(i&lt;2?&#x27;Control&#x27;:&#x27;Treatment&#x27;)+&#x27; · &#x27;+(d.modelType===&#x27;neb&#x27;?(i%2?&#x27;final&#x27;:&#x27;initial&#x27;):(i%2?&#x27;adsorbed&#x27;:&#x27;clean&#x27;));c.orientation=&#x27;&#x27;;c.termination=&#x27;&#x27;;c.nitrogenSite=&#x27;&#x27;;c.adsorbate=&#x27;&#x27;;c.charge=&#x27;&#x27;;c.spin=settings.spin||&#x27;&#x27;;c.assumptions=(c.assumptions+&#x27;\nMethod: &#x27;+m.structure).slice(0,2000);});
+      if([&#x27;neb&#x27;,&#x27;adsorption&#x27;].includes(d.modelType))s.groups.forEach((g,i)=&gt;{g.label=i?&#x27;Treatment&#x27;:&#x27;Control&#x27;;g.variable=d.modelType===&#x27;neb&#x27;?&#x27;reaction coordinate&#x27;:&#x27;adsorbate addition&#x27;;});
     }
     return s;
   }

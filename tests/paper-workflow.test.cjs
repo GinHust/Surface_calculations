@@ -58,6 +58,15 @@ test('USTAR sizes and checksums cover UTF-8 evidence and reject unsafe paths',()
   assert.equal(size,new TextEncoder().encode(body).length);assert.equal(decoder.decode(tar.slice(512,512+size)),body);assert.equal(tar.length%512,0);
   assert.throws(()=>workflow.tar({'../secret':'bad'}),/archive path/);
 });
+test('paper-to-planner handoff transfers cited settings and clears diamond-specific template assumptions',()=>{
+  const f=fixture(),planner=require('../src/research-planner.js');f.session.analysis.definition.modelType='adsorption';
+  const study=reading.buildStudy(f.session,planner);
+  assert.equal(study.protocol.cutoff,'500');assert.equal(study.protocol.xc,'PBE');
+  assert(study.configurations.every(c=>!c.orientation&&!c.termination&&!c.nitrogenSite&&!c.charge));
+  assert.equal(study.configurations[0].label,'Control · clean');assert.equal(study.configurations[3].label,'Treatment · adsorbed');
+  assert.equal(study.groups[0].variable,'adsorbate addition');
+  f.session.analysis.multiAgent.review.decision='needs_revision';assert.throws(()=>reading.buildStudy(f.session,planner),/reviewer revision/);
+});
 test('reader prevents stale analysis exports and requires explicit draft review',async()=>{
   const f=fixture(),events={},elements={'[data-pr-bundle-review]':{checked:true},'[data-pr-bundle-engine]':{value:'VASP'}},host={innerHTML:'',addEventListener:(k,fn)=>events[k]=fn,querySelector:k=>elements[k]};let exported;
   global.SurfacePaperWorkflow=workflow;
