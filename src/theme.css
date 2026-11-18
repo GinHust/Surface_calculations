@@ -1,4 +1,10 @@
 /* Shared visual language. Keep the existing navigation and calculation flow. */
+#surface-lab-bilingual .agent-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+#surface-lab-bilingual .agent-grid .record{margin:0;border-top:3px solid var(--accent);padding:12px}
+#surface-lab-bilingual .paper-reading blockquote{margin:8px 0;padding:8px 12px;border-left:3px solid var(--accent);overflow-wrap:anywhere}
+#surface-lab-bilingual .paper-reading td{vertical-align:top;min-width:100px}
+@media(max-width:900px){#surface-lab-bilingual .agent-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){#surface-lab-bilingual .agent-grid{grid-template-columns:1fr}}
 #surface-lab-bilingual {
   color-scheme: light;
   --p: #ffffff; --bg: #f4f7fa; --ink: #152b3b; --sub: #607385;

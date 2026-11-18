@@ -6,10 +6,10 @@
   "functions": {
     "api/analyze.mjs": {
       "maxDuration": 240,
-      "includeFiles": "src/paper-reading.js"
+      "includeFiles": "src/paper-*.js"
     },
     "api/health.mjs": {
-      "includeFiles": "src/paper-reading.js"
+      "includeFiles": "src/paper-*.js"
     }
   },
   "rewrites": [

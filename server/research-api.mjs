@@ -6,6 +6,7 @@ import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
 // The shared module exports CommonJS in Node and a browser global in the site.
 const reading=require('../src/paper-reading.js');
+const workflow=require('../src/paper-workflow.js');
 const string={type:'string'};
 const object=properties=>({type:'object',additionalProperties:false,properties,required:Object.keys(properties)});
 const array=items=>({type:'array',items});
@@ -49,13 +50,12 @@ export function requestEnvironment(req,env){
   const token=req.headers['x-vercel-oidc-token'];
   return {...env,VERCEL_OIDC_TOKEN:typeof token==='string'?token:env.VERCEL_OIDC_TOKEN};
 }
-export async function analyze(raw,env,fetcher=fetch){
-  const input=validateInput(raw);
+async function callAgent(input,env,fetcher,outputSchema,prompt,name){
   const provider=providerConfig(env);
   if(!provider.key||!provider.model)throw Error('Analysis provider is not configured.');
   const response=await fetcher(provider.url,{
-    method:'POST',headers:{'Authorization':'Bearer '+provider.key,'Content-Type':'application/json'},signal:AbortSignal.timeout(90000),
-    body:JSON.stringify({model:provider.model,store:false,instructions,input:JSON.stringify(input),max_output_tokens:9000,text:{format:{type:'json_schema',name:'paper_grounded_problem',strict:true,schema}}})
+    method:'POST',headers:{'Authorization':'Bearer '+provider.key,'Content-Type':'application/json'},signal:AbortSignal.timeout(70000),
+    body:JSON.stringify({model:provider.model,store:false,instructions:prompt,input:JSON.stringify(input),max_output_tokens:9000,text:{format:{type:'json_schema',name,strict:true,schema:outputSchema}}})
   });
   if(response.status===402)throw Error('AI credits are unavailable or exhausted. Check the AI provider credit balance.');
   if(!response.ok){
@@ -65,10 +65,46 @@ export async function analyze(raw,env,fetcher=fetch){
   const result=await response.json();if(result.status!=='completed')throw Error('Analysis did not complete. Reduce input or retry.');
   const text=(result.output||[]).flatMap(item=>item.content||[]).filter(c=>c.type==='output_text').map(c=>c.text).join('');
   let rawAnalysis;try{rawAnalysis=JSON.parse(text);}catch(_){throw Error('Analysis provider returned no valid structured result.');}
+  return rawAnalysis;
+}
+export async function analyze(raw,env,fetcher=fetch){
+  const input=validateInput(raw);
+  if(raw.workflow==='multiagent')return analyzeMultiAgent(input,env,fetcher);
+  const rawAnalysis=await callAgent(input,env,fetcher,schema,instructions,'paper_grounded_problem');
   // Reject the entire response if a quote or source ID cannot be verified.
   const verified=reading.verifyAnalysis(rawAnalysis,input.segments);
   for(const q of input.questions)if(input.answers[q.id]?.trim()&&!verified.questions.some(n=>n.id===q.id&&n.question===q.question))throw Error('Analysis changed an answered question. Retry with the previous question mapping.');
   return verified;
+}
+const finding=schema.properties.findings;
+export const agentSchemas={
+  reader:object({findings:finding}),
+  methods:object({settings:array(object({key:{type:'string',enum:['engine','xc','cutoff_eV','ecutwfc_Ry','ecutrho_Ry','ediff_eV','conv_thr_Ry','force_eV_A','kmesh','spin']},value:string,citations:array(citation)})),structure:string,citations:array(citation),missing:array(string)}),
+  planner:object({...schema.properties,calculations:array(object({id:string,task:{type:'string',enum:['relax','scf','dos','neb']},purpose:string,dependencies:array(string),citations:array(citation)}))}),
+  reviewer:object({decision:{type:'string',enum:['needs_revision','researcher_review_required']},checks:array(object({severity:{type:'string',enum:['blocker','warning','note']},message:string,citations:array(citation)}))})
+};
+export async function analyzeMultiAgent(input,env,fetcher=fetch){
+  // Independent evidence and methods agents; dependent planning and critique follow.
+  // Shared deadline bounds all provider work below the function's 240-second limit.
+  const deadline=AbortSignal.timeout(215000);
+  const boundedFetch=(url,options)=>fetcher(url,{...options,signal:AbortSignal.any([options.signal,deadline])});
+  const run=(role,data,prompt)=>callAgent(data,env,boundedFetch,agentSchemas[role],instructions+'\nROLE: '+role+'\n'+prompt,'paper_'+role);
+  const [evidence,rawMethods]=await Promise.all([
+    run('reader',input,'Extract at most 12 relevant reported findings and explicitly labelled inferences. No proposed settings or model choices. Each finding needs an exact source quote.'),
+    run('methods',input,'Reconstruct the reported computational method ONLY. Return at most 11 unique settings. Omit every unsupported setting; list it in missing instead. Engine is VASP or QE, xc is PBE or HSE06, spin is 1 or 2. Numeric settings are positive numeric strings without units, in the units encoded by their key. Do not convert units. kmesh is three integers separated by single spaces, only when explicitly specified. Each value must be stated in its cited passage, not inferred. Do not interpret a temperature, plane-wave density cutoff, force threshold or unrelated number as the wavefunction cutoff. Describe structure with exact citations. If no structure details are available, say so and cite the evidence scope. List geometry, boundary conditions, pseudopotentials, convergence, centering/shift and reaction-path omissions. Do not reconstruct coordinates.')
+  ]);
+  // Reuse the established finding verifier; no unverified agent output reaches planning.
+  const anchor=input.segments.find(s=>s.text.replace(/\s+/g,' ').trim().length>=20);
+  if(!anchor)throw Error('No citable source segment.');
+  const minimal={modelType:'undetermined',researchQuestion:'Evidence extraction',hypothesis:'Pending',target:'Pending',controls:'Pending',missing:[],citations:[{segmentId:anchor.id,quote:anchor.text.trim().slice(0,1000)}]};
+  const verifiedEvidence=reading.verifyAnalysis({findings:evidence.findings,questions:[],definition:minimal},input.segments).findings;
+  const verifiedMethods=workflow.methods(rawMethods,input.segments);
+  const proposed=await run('planner',{...input,evidence:verifiedEvidence,methods:verifiedMethods},'Define the research problem and questions using the verified evidence and methods. Preserve answered question IDs. Propose at most 12 calculation steps, IDs c1, c2, etc.; dependencies refer only to earlier IDs. Steps are proposals, not paper-reported results; cite the evidence motivating them. Include relax/scf before DOS or NEB as appropriate. Keep modelType undetermined and calculations empty if control/treatment or observable are unresolved. Do not invent structures or treat missing abstract details as a proven scientific gap.');
+  const verified=reading.verifyAnalysis(proposed,input.segments);
+  for(const q of input.questions)if(input.answers[q.id]?.trim()&&!verified.questions.some(n=>n.id===q.id&&n.question===q.question))throw Error('Analysis changed an answered question.');
+  const calculations=workflow.calculations(proposed.calculations,input.segments);
+  const critique=workflow.review(await run('reviewer',{...input,evidence:verifiedEvidence,methods:verifiedMethods,proposal:{...verified,calculations}},'Independently critique every proposed setting and calculation against the ORIGINAL segments. Flag any value not entailed by its quote, different papers or methods mixed into one protocol, unit mismatch, missing coordinates, controls, references, unmatched composition/cells/atom order, missing SCF dependencies, and unanswered questions. Claims about the paper need exact quotes; generic missing-input checks may have empty citations. Return needs_revision for contradictions or unsupported settings; otherwise researcher_review_required. Never declare an input runnable or a result computed.'),input.segments);
+  return {...verified,multiAgent:workflow.verify({version:1,agents:workflow.roles.map(role=>({role,status:'completed',model:providerConfig(env).model})),methods:verifiedMethods,calculations,review:critique},input.segments)};
 }
 function tokenMatches(header,expected){
   if(!expected)return false;const a=Buffer.from(header||''),b=Buffer.from('Bearer '+expected);return a.length===b.length&&timingSafeEqual(a,b);

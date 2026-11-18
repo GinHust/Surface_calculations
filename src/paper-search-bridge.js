@@ -36,7 +36,7 @@
         try{
           const url=new URL(endpoint);if(url.protocol!=='https:'||url.username||url.password||url.pathname!=='/analyze'||url.search||url.hash)throw Error('Use an HTTPS analysis service URL ending in /analyze.');
           if(typeof token!=='string'||token.length>1000||JSON.stringify(payload).length>1024*1024)throw Error('Invalid analysis request.');
-          analyzing=true;const response=await fetch(url.href,{method:'POST',headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},body:JSON.stringify(payload),signal:AbortSignal.timeout(100000)});
+          analyzing=true;const response=await fetch(url.href,{method:'POST',headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},body:JSON.stringify(payload),signal:AbortSignal.timeout(225000)});
           const result=await response.json();if(!response.ok)throw Error(result.error||'Analysis service error ('+response.status+').');
           if(JSON.stringify(result).length>200000)throw Error('Analysis response exceeds the supported limit.');reply({analysis:result.analysis});
         }catch(error){reply({error:error.message||'Could not reach the analysis service.'});}finally{analyzing=false;}

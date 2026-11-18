@@ -1,5 +1,7 @@
 # KICETIC-surface · Surface Compute Lab
 
+The paper workspace now coordinates four server-side agents for evidence extraction, cited-method reconstruction, calculation planning and scientific critique. It accepts local PDF/text and exports VASP/QE draft TAR packages with provenance and explicit blockers. See the [Vietnamese workflow guide](docs/multi-agent-research.vi.md). Build with `node tools/build.mjs` when Python is unavailable.
+
 An English-language interface mockup for a small diamond-growth research group: literature data → problem definition → DFT input drafts → simulated cluster jobs → results → kinetics / COMSOL transfer.
 
 [한국어 안내](docs/SHARING.ko.md) · [Research survey and module notes](docs/research-and-modules.ko.md)

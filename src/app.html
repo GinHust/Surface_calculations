@@ -29,6 +29,7 @@ __STRUCTURE_VIEWER_JS__
 __RESEARCH_PLANNER_JS__
 __RESEARCH_ASSISTANT_JS__
 __PAPER_READING_JS__
+__PAPER_WORKFLOW_JS__
 </script>
 <script>
 __PAPER_MODEL_JS__
@@ -147,7 +148,8 @@ paperReading=SurfacePaperReading.create({initial:{...state.paperReading,endpoint
   onSources(records){researchPlanner.registerSources(records);state.research=researchPlanner.snapshot();save();},
   onSearch(query){window.parent.postMessage({type:'surface-paper-search',query},'*');},
   onExport(value){download('paper-reading-session.json',JSON.stringify(value,null,2),'application/json');},
-  onAnalyze({endpoint,token,payload}){return new Promise((resolve,reject)=>{const requestId='analysis-'+Date.now()+'-'+Math.random().toString(36).slice(2);const timer=setTimeout(()=>{analysisRequests.delete(requestId);reject(new Error('Analysis timed out. Please retry.'));},105000);analysisRequests.set(requestId,{resolve,reject,timer});window.parent.postMessage({type:'surface-paper-analysis',requestId,endpoint,token,payload},'*');});},
+  onExportBundle(bundle){download('paper-dft-drafts.tar',SurfacePaperWorkflow.tar(bundle.files),'application/x-tar');},
+  onAnalyze({endpoint,token,payload}){return new Promise((resolve,reject)=>{const requestId='analysis-'+Date.now()+'-'+Math.random().toString(36).slice(2);const timer=setTimeout(()=>{analysisRequests.delete(requestId);reject(new Error('Analysis timed out. Please retry.'));},230000);analysisRequests.set(requestId,{resolve,reject,timer});window.parent.postMessage({type:'surface-paper-analysis',requestId,endpoint,token,payload},'*');});},
   onCreate(study,session){researchPlanner.registerSources(session.papers.map(SurfacePaperReading.sourceRecord));if(!researchPlanner.addStudy(study))return false;state.research=researchPlanner.snapshot();state.problem=study.question;state.page='plan';render();save();return true;}
 });
 window.addEventListener('message',event=>{
